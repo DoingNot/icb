@@ -1,38 +1,38 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import * as PIXI from 'pixi.js';
-	
-  import { DEVICE_RATIO } from '$lib/utils/game/utils';
+    import * as PIXI from 'pixi.js';
 
-  let { children }: any = $props();
-	let pixiApplication: any = $state();
+    import { DEVICE_RATIO } from '$lib/utils/game/utils';
 
+    let { children }: any = $props();
 
-	onMount(() => {
-		pixiApplication = new PIXI.Application<HTMLCanvasElement>({
-			backgroundAlpha: 1,
-			autoDensity: true,
-			resolution: DEVICE_RATIO,
-			antialias: true,
-			width: 400,
-			height: 700,
-		});
+    function createApp() {
+        let pixiApplication = $state(new PIXI.Application<HTMLCanvasElement>({
+        backgroundAlpha: 1,
+        autoDensity: true,
+        resolution: DEVICE_RATIO,
+        antialias: true,
+        width: 400,
+        height: 700,
+        }))
 
-		globalThis.__PIXI_APP__ = pixiApplication;
+        globalThis.__PIXI_APP__ = pixiApplication;
 
-		// to prevent that you can't scroll the page with touch on the canvas. https://github.com/pixijs/pixijs/issues/4824
-		pixiApplication.renderer.events.autoPreventDefault = false;
-		pixiApplication.renderer.view.style.touchAction = 'auto';
+        // to prevent that you can't scroll the page with touch on the canvas. https://github.com/pixijs/pixijs/issues/4824
+        pixiApplication.renderer.events.autoPreventDefault = false;
+        pixiApplication.renderer.view.style.touchAction = 'auto';
 
-    document.body.appendChild(pixiApplication.view)
+        document.body.appendChild(pixiApplication.view)
 
-		return () => {
-			pixiApplication.destroy();
-		};
-	});
+        return {
+            get pixiApplication() { return pixiApplication },
+        };
+
+    }
+
+  export const app = createApp();
 </script>
 
-{#if pixiApplication}
+{#if app.pixiApplication}
     {@render children()}
 {/if}
 
