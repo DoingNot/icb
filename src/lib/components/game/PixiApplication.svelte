@@ -6,8 +6,6 @@
         createApp()
     })
 
-
-    $: console.log($pixiApplication)
 </script>
 
 {#if $pixiApplication}

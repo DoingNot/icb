@@ -1,7 +1,8 @@
 <script lang="ts">
     import PixiApplication from "./components/game/PixiApplication.svelte";
-    import { createApp } from './utils/game/createApp'
+    import Bar from "./components/game/Bar.svelte";
 </script>
 
 <PixiApplication>
+    <Bar />
 </PixiApplication>
