@@ -8,6 +8,7 @@
 	export let rotation = 0;
 	export let skew: PointValue = 0;
 	export let scale: PointValue = 1;
+  export let pivot: PointValue;
 	export let x = 0;
 	export let y = 0;
 	export let alpha = 1;
@@ -42,7 +43,7 @@
 	{blendMode}
 	{eventMode}
 	{cursor}
-	pivot={anchorToPivot({ anchor, sizes: { width, height } })}
+	pivot={pivot ? pivot : anchorToPivot({ anchor, sizes: { width, height } })}
 	on:click
 	on:hoverOn
 	on:hoverOff

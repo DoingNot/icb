@@ -5,46 +5,60 @@
     import { onMount } from "svelte";
 
     const y = tweened(500, {
-        duration: 15,
-        easing: cubicInOut
+        duration: 5,
     });
 
-    let increaseIntervalId: ReturnType<typeof setInterval>;
-    let decreaseIntervalId: ReturnType<typeof setInterval>;
+    let increaseTimeoutId: number | undefined = undefined;
+    let decreaseTimeoutId: number | undefined = undefined;
 
-    const increaseY = () => {
+    const increaseY = async () => {
         y.set($y - 3);
-    };
-
-    const decreaseY = () => {
-        y.set($y + 3);
-    };
-
-    const keyDownHandler = (event: KeyboardEvent) => {
-        if (event.key === 'w' && !increaseIntervalId) {
-            increaseY();
-            increaseIntervalId = setInterval(increaseY, 50);
+        await waitForTimeout(20);
+        if (increaseTimeoutId !== undefined) {
+            increaseTimeoutId = setTimeout(increaseY, 0);
         }
-        if (event.key === 's' && !decreaseIntervalId) {
-            decreaseY();
-            decreaseIntervalId = setInterval(decreaseY, 50);
+    };
+
+    const decreaseY = async () => {
+        y.set($y + 3);
+        await waitForTimeout(20);
+        if (decreaseTimeoutId !== undefined) {
+            decreaseTimeoutId = setTimeout(decreaseY, 0);
+        }
+    };
+
+    const keyDownHandler = async (event: KeyboardEvent) => {
+        if (event.key === 'w' && increaseTimeoutId === undefined) {
+            increaseTimeoutId = setTimeout(increaseY, 0);
+            await increaseY();
+        }
+        if (event.key === 's' && decreaseTimeoutId === undefined) {
+            decreaseTimeoutId = setTimeout(decreaseY, 0);
+            await decreaseY();
         }
     };
 
     const keyUpHandler = (event: KeyboardEvent) => {
         if (event.key === 'w') {
-            clearInterval(increaseIntervalId);
-            increaseIntervalId = 0;
+            clearTimeout(increaseTimeoutId);
+            increaseTimeoutId = undefined;
         }
         if (event.key === 's') {
-            clearInterval(decreaseIntervalId);
-            decreaseIntervalId = 0;
+            clearTimeout(decreaseTimeoutId);
+            decreaseTimeoutId = undefined;
         }
     };
 
     onMount(() => {
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
+
+        return () => {
+            window.removeEventListener('keydown', keyDownHandler);
+            window.removeEventListener('keyup', keyUpHandler);
+            clearTimeout(increaseTimeoutId);
+            clearTimeout(decreaseTimeoutId);
+        };
     });
 
 </script>
@@ -53,4 +67,5 @@
     scale={{'x': 6, 'y': 1}}
     backgroundColor={0xff00ff}
     y={$y}
+    pivot={{'x': -53, 'y': 0}}
 />
