@@ -9,8 +9,8 @@
         easing: cubicInOut
     });
 
-    let increaseIntervalId;
-    let decreaseIntervalId;
+    let increaseIntervalId: ReturnType<typeof setInterval>;
+    let decreaseIntervalId: ReturnType<typeof setInterval>;
 
     const increaseY = () => {
         y.set($y - 3);
@@ -20,25 +20,25 @@
         y.set($y + 3);
     };
 
-    const keyDownHandler = (event) => {
+    const keyDownHandler = (event: KeyboardEvent) => {
         if (event.key === 'w' && !increaseIntervalId) {
             increaseY();
-            increaseIntervalId = setInterval(increaseY, 50); // Adjust interval time as needed
+            increaseIntervalId = setInterval(increaseY, 50);
         }
         if (event.key === 's' && !decreaseIntervalId) {
             decreaseY();
-            decreaseIntervalId = setInterval(decreaseY, 50); // Adjust interval time as needed
+            decreaseIntervalId = setInterval(decreaseY, 50);
         }
     };
 
-    const keyUpHandler = (event) => {
+    const keyUpHandler = (event: KeyboardEvent) => {
         if (event.key === 'w') {
             clearInterval(increaseIntervalId);
-            increaseIntervalId = null;
+            increaseIntervalId = 0;
         }
         if (event.key === 's') {
             clearInterval(decreaseIntervalId);
-            decreaseIntervalId = null;
+            decreaseIntervalId = 0;
         }
     };
 
@@ -47,12 +47,10 @@
         window.addEventListener('keyup', keyUpHandler);
     });
 
-    $: console.log($y, 'y');
 </script>
 
 <Rectangle 
-    scale={1}
+    scale={{'x': 6, 'y': 1}}
     backgroundColor={0xff00ff}
-    x={200}
     y={$y}
 />
