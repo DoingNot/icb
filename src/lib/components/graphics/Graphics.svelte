@@ -16,7 +16,7 @@
 	export let visible = true;
 	export let isMask: boolean | 'unset' = 'unset';
 	export let draw: (graphics: PIXI.Graphics) => void;
-	export let cursor: 'pointer'
+	export let cursor = 'pointer'
 	export let blendMode: number = PIXI.BLEND_MODES.NORMAL;
 	
 	export let eventMode: 'none' | 'passive' | 'auto' | 'static' | 'dynamic' = 'none';

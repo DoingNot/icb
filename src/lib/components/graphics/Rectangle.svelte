@@ -15,7 +15,7 @@
 	export let visible = true;
 	export let isMask: boolean | 'unset' = 'unset';
 	export let eventMode: 'none' | 'passive' | 'auto' | 'static' | 'dynamic' = 'none';
-	export let cursor: 'pointer';
+	export let cursor = 'pointer';
 	export let blendMode: number = PIXI.BLEND_MODES.NORMAL;
 
 	export let anchor: PointValue = 0;

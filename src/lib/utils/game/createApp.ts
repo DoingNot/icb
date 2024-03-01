@@ -5,8 +5,10 @@ import { DEVICE_RATIO } from '$lib/utils/game/utils';
 export const pixiApplication: any = writable()
 
 export function createApp() {
+
     const app = new PIXI.Application<HTMLCanvasElement>({
         backgroundAlpha: 1,
+        backgroundColor: 0x21252A,
         autoDensity: true,
         resolution: DEVICE_RATIO,
         antialias: true,
