@@ -1,8 +1,10 @@
 <script lang="ts">
+    import Matter from 'matter-js';
     import Rectangle from "$lib/components/graphics/Rectangle.svelte";
     import { tweened } from "svelte/motion";
-    import { cubicInOut } from "svelte/easing";
     import { onMount } from "svelte";
+    import { world } from '$lib/utils/game/createEngine';
+
 
     const leftY = tweened(500, {
         duration: 5,
@@ -17,6 +19,15 @@
     let increaseRightTimeoutId: number | undefined = undefined;
     let decreaseRightTimeoutId: number | undefined = undefined;
 
+    const updateBody = () => {
+        Matter.Body.setPosition(barBody, {
+            x: barWidth / 2,
+            y: ($leftY + $rightY) / 2,
+        });
+        Matter.Body.setAngle(barBody, barRotation);
+        console.log($world)
+    }
+
     const increaseLeftY = async () => {
         if($rightY - $leftY > 150) {
             return
@@ -25,6 +36,7 @@
         if (increaseLeftTimeoutId !== undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
         }
+        updateBody()
     };
 
     const decreaseLeftY = async () => {
@@ -35,6 +47,7 @@
         if (decreaseLeftTimeoutId !== undefined) {
             decreaseLeftTimeoutId = setTimeout(decreaseLeftY, 0);
         }
+        updateBody()
     };
 
     const increaseRightY = async () => {
@@ -45,6 +58,7 @@
         if (increaseRightTimeoutId !== undefined) {
             increaseRightTimeoutId = setTimeout(increaseRightY, 0);
         }
+        updateBody()
     };
 
     const decreaseRightY = async () => {
@@ -55,6 +69,7 @@
         if (decreaseRightTimeoutId !== undefined) {
             decreaseRightTimeoutId = setTimeout(decreaseRightY, 0);
         }
+        updateBody()
     };
 
     const keyDownHandler = async (event: KeyboardEvent) => {
@@ -95,7 +110,24 @@
         }
     };
 
+
+    let barBody;
+
     onMount(() => {
+        barBody = Matter.Bodies.rectangle(
+            barWidth/ 2,
+            ($leftY + $rightY) / 2,
+            barWidth,
+            barHeight,
+            {
+                frictionAir: 0,
+                isStatic: true,
+                label: 'Bar',
+            }
+        );
+
+        Matter.World.add($world, barBody);
+
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
         return () => {
