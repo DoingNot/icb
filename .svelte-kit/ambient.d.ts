@@ -27,6 +27,7 @@
  */
 declare module '$env/static/private' {
 	export const LESSOPEN: string;
+	export const npm_package_devDependencies__types_matter_js: string;
 	export const NVIM: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
@@ -50,6 +51,7 @@ declare module '$env/static/private' {
 	export const COLORTERM: string;
 	export const WSL_DISTRO_NAME: string;
 	export const npm_package_devDependencies_typescript: string;
+	export const npm_package_dependencies_matter_js: string;
 	export const npm_package_scripts_dev: string;
 	export const npm_package_dependencies_svelte: string;
 	export const LOGNAME: string;
@@ -130,6 +132,7 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		LESSOPEN: string;
+		npm_package_devDependencies__types_matter_js: string;
 		NVIM: string;
 		USER: string;
 		npm_config_user_agent: string;
@@ -153,6 +156,7 @@ declare module '$env/dynamic/private' {
 		COLORTERM: string;
 		WSL_DISTRO_NAME: string;
 		npm_package_devDependencies_typescript: string;
+		npm_package_dependencies_matter_js: string;
 		npm_package_scripts_dev: string;
 		npm_package_dependencies_svelte: string;
 		LOGNAME: string;

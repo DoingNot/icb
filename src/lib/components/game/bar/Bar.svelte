@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Rectangle from "../graphics/Rectangle.svelte";
+    import Rectangle from "$lib/components/graphics/Rectangle.svelte";
     import { tweened } from "svelte/motion";
     import { cubicInOut } from "svelte/easing";
     import { onMount } from "svelte";
@@ -18,6 +18,9 @@
     let decreaseRightTimeoutId: number | undefined = undefined;
 
     const increaseLeftY = async () => {
+        if($rightY - $leftY > 150) {
+            return
+        }
         leftY.set($leftY - 3);
         if (increaseLeftTimeoutId !== undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
@@ -25,6 +28,9 @@
     };
 
     const decreaseLeftY = async () => {
+        if($leftY - $rightY > 150) {
+            return
+        }
         leftY.set($leftY + 3);
         if (decreaseLeftTimeoutId !== undefined) {
             decreaseLeftTimeoutId = setTimeout(decreaseLeftY, 0);
@@ -32,6 +38,9 @@
     };
 
     const increaseRightY = async () => {
+        if($leftY - $rightY > 150) {
+            return
+        }
         rightY.set($rightY - 3);
         if (increaseRightTimeoutId !== undefined) {
             increaseRightTimeoutId = setTimeout(increaseRightY, 0);
@@ -39,6 +48,9 @@
     };
 
     const decreaseRightY = async () => {
+        if($rightY - $leftY > 150) {
+            return
+        }
         rightY.set($rightY + 3);
         if (decreaseRightTimeoutId !== undefined) {
             decreaseRightTimeoutId = setTimeout(decreaseRightY, 0);
@@ -96,31 +108,30 @@
         };
     });
 
-    $: barHeight = 50;
+    const BLOCK_OFFSET = 32;
+    $: barHeight = 20;
     $: barWidth = 390;
     $: leftX = 0;
     $: rightX = barWidth;
-    $: barLength = Math.sqrt(($rightY - $leftY) ** 2 + barWidth ** 2);
     $: barRotation = Math.atan2(barWidth, $leftY - $rightY) - Math.PI/2;
-    $: console.log($leftY, $rightY, barRotation)
 </script>
 
 <Rectangle
-    scale={{ x: 0.2, y: 0.2 }}
+    scale={{ x: 0.2, y: 0.8 }}
     backgroundColor={0xff00ff}
-    y={$leftY}
-    x={leftX}
+    y={$leftY - BLOCK_OFFSET}
+    x={leftX + BLOCK_OFFSET / 6}
     pivot={{ x: 0, y: barHeight / 2 }}
 />
 <Rectangle
-    scale={{ x: 0.2, y: 0.2 }}
+    scale={{ x: 0.2, y: 0.8 }}
     backgroundColor={0xff00ff}
-    y={$rightY}
-    x={rightX}
+    y={$rightY - BLOCK_OFFSET}
+    x={rightX - BLOCK_OFFSET / 6}
     pivot={{ x: 0, y: barHeight / 2 }}
 />
 <Rectangle
-    scale={{ x: 10, y: barHeight / 100 }}
+    scale={{ x: 10, y: 0.2 }}
     backgroundColor={0xff00ff}
     y={($leftY + $rightY) / 2}
     x={barWidth/2}
