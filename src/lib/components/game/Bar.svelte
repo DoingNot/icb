@@ -1,17 +1,16 @@
 <script lang="ts">
     import Matter from 'matter-js';
-    import Rectangle from "$lib/components/graphics/Rectangle.svelte";
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
     import { world } from '$lib/utils/game/createEngine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, PIXI_MATTER_RATIO } from './constants'
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT } from './constants'
 
 
-    const leftY = tweened(500, {
+    const leftY = tweened(GAME_HEIGHT - 100, {
         duration: TWEEN_DURATION,
     });
 
-    const rightY = tweened(500, {
+    const rightY = tweened(GAME_HEIGHT - 100, {
         duration: TWEEN_DURATION,
     });
 
@@ -22,17 +21,17 @@
 
     const updateBody = () => {
         Matter.Body.setPosition(barBody, {
-            x: BAR_WIDTH / 2,
+            x: GAME_WIDTH / 2,
             y: ($leftY + $rightY) / 2,
         });
         Matter.Body.setAngle(barBody, barRotation);
         Matter.Body.setPosition(barLeft, {
-            x: BLOCK_OFFSET / 2,
-            y: $leftY - BLOCK_OFFSET / 2
+            x: GAME_WIDTH / 2 - BAR_WIDTH / 2 + BLOCK_OFFSET,
+            y: $leftY - BLOCK_OFFSET / 2 + ($rightY - $leftY) / 13
         })
         Matter.Body.setPosition(barRight, {
-            x: BAR_WIDTH - (BLOCK_OFFSET / 2),
-            y: $rightY - BLOCK_OFFSET / 2
+            x: GAME_WIDTH / 2 + BAR_WIDTH / 2 - BLOCK_OFFSET,
+            y: $rightY - BLOCK_OFFSET / 2 - ($rightY - $leftY) / 13
         })
     }
 
@@ -125,7 +124,7 @@
 
     onMount(() => {
         barBody = Matter.Bodies.rectangle(
-            BAR_WIDTH / 2,
+            GAME_WIDTH / 2,
             ($leftY + $rightY) / 2,
             BAR_WIDTH,
             BAR_HEIGHT,
@@ -133,26 +132,35 @@
                 frictionAir: 0,
                 isStatic: true,
                 label: 'Bar',
+                render: {
+                    fillStyle: BAR_COLOR
+                }
             }
         );
         barLeft = Matter.Bodies.rectangle(
-            BLOCK_OFFSET / 2,
-            $leftY - BLOCK_OFFSET / 2,
+            GAME_WIDTH / 2 - BAR_WIDTH / 2 + BLOCK_OFFSET,
+            $leftY - BLOCK_OFFSET / 2 + ($rightY - $leftY) / 13,
             BAR_WIDTH / 40,
             BAR_HEIGHT * 5,
             {
                 isStatic: true,
-                label: 'BarLeft'
+                label: 'BarLeft',
+                render: {
+                    fillStyle: BAR_COLOR
+                }
             }
         );
         barRight = Matter.Bodies.rectangle(
-            BAR_WIDTH - (BLOCK_OFFSET / 2),
-            $rightY - BLOCK_OFFSET / 2,
+            GAME_WIDTH / 2 + BAR_WIDTH / 2 - BLOCK_OFFSET,
+            $rightY - BLOCK_OFFSET / 2 - ($rightY - $leftY) / 13,
             BAR_WIDTH / 40,
             BAR_HEIGHT * 5,
             {
                 isStatic: true,
-                label: 'BarLeft'
+                label: 'BarLeft',
+                render: {
+                    fillStyle: BAR_COLOR
+                }
             }
         );
 
@@ -170,30 +178,5 @@
         };
     });
 
-    $: leftX = 0;
-    $: rightX = BAR_WIDTH;
     $: barRotation = Math.atan2(BAR_WIDTH, $leftY - $rightY) - Math.PI/2;
 </script>
-
-<Rectangle
-    scale={{ x: (BAR_WIDTH / 40) / PIXI_MATTER_RATIO, y: BAR_HEIGHT * 5 / PIXI_MATTER_RATIO }}
-    backgroundColor={BAR_COLOR}
-    y={$leftY - BLOCK_OFFSET}
-    x={leftX + BLOCK_OFFSET / 2}
-    pivot={{ x: 0, y: BAR_HEIGHT / 3 }}
-/>
-<Rectangle
-    scale={{ x: (BAR_WIDTH / 40) / PIXI_MATTER_RATIO, y: BAR_HEIGHT * 5 / PIXI_MATTER_RATIO }}
-    backgroundColor={BAR_COLOR}
-    y={$rightY - BLOCK_OFFSET}
-    x={rightX - BLOCK_OFFSET / 3}
-    pivot={{ x: 0, y: BAR_HEIGHT / 2 }}
-/>
-<Rectangle
-    scale={{ x: BAR_WIDTH / PIXI_MATTER_RATIO, y: BAR_HEIGHT / PIXI_MATTER_RATIO }}
-    backgroundColor={BAR_COLOR}
-    y={($leftY + $rightY) / 2}
-    x={BAR_WIDTH/2}
-    pivot={{ x: 25, y: 25 }}
-    rotation={barRotation}
-/>
