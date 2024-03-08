@@ -7,7 +7,7 @@
     import { world } from '$lib/utils/game/Engine';
     import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH } from './constants'
     import barImage from '../../assets/bar.png'
-
+    import barBlockImage from '../../assets/barblock.png'
 
     const leftY = tweened(GAME_HEIGHT - 100, {
         duration: TWEEN_DURATION,
@@ -17,6 +17,15 @@
         duration: TWEEN_DURATION,
     });
 
+    $: barY = (($leftY + $rightY) / 2);
+    const barX = GAME_WIDTH / 2;
+
+    const barLeftX = barX - BAR_WIDTH / 2 + BLOCK_OFFSET;
+    $: barLeftY = $leftY - BLOCK_OFFSET / 8 + ($rightY - $leftY) / 20 - 23
+
+    const barRightX = barX + BAR_WIDTH / 2 - BLOCK_OFFSET;
+    $: barRightY = $rightY - BLOCK_OFFSET / 8 - ($rightY - $leftY) / 20 - 23;
+
     let increaseLeftTimeoutId: number | undefined = undefined;
     let decreaseLeftTimeoutId: number | undefined = undefined;
     let increaseRightTimeoutId: number | undefined = undefined;
@@ -24,22 +33,27 @@
 
     const updateBody = () => {
         Matter.Body.setPosition(barBody, {
-            x: GAME_WIDTH / 2,
-            y: ($leftY + $rightY) / 2,
+            x: barX,
+            y: barY
         });
         Matter.Body.setAngle(barBody, barRotation);
 
-        barBodySprite.position.set(GAME_WIDTH / 2, ($leftY + $rightY) / 2)
+        barBodySprite.position.set(barX, barY)
         barBodySprite.rotation = barRotation
 
         Matter.Body.setPosition(barLeft, {
-            x: GAME_WIDTH / 2 - BAR_WIDTH / 2 + BLOCK_OFFSET,
-            y: $leftY - BLOCK_OFFSET / 2 + ($rightY - $leftY) / 13
+            x: barLeftX,
+            y: barLeftY
         })
+
+        barLeftSprite.position.set(barLeftX, barLeftY)
+
         Matter.Body.setPosition(barRight, {
-            x: GAME_WIDTH / 2 + BAR_WIDTH / 2 - BLOCK_OFFSET,
-            y: $rightY - BLOCK_OFFSET / 2 - ($rightY - $leftY) / 13
+            x: barRightX,
+            y: barRightY
         })
+
+        barRightSprite.position.set(barRightX, barRightY)
     }
 
     const increaseLeftY = async () => {
@@ -130,13 +144,13 @@
     let barLeft: Matter.Body;
     let barRight: Matter.Body;
     let barBodySprite: PIXI.Sprite
-    let barLeftRect: PIXI.Graphics
-    let barRightRect: PIXI.Graphics
+    let barLeftSprite: PIXI.Sprite
+    let barRightSprite: PIXI.Sprite
 
     onMount(() => {
         barBody = Matter.Bodies.rectangle(
-            GAME_WIDTH / 2,
-            ($leftY + $rightY) / 2,
+            barX,
+            barY,
             BAR_WIDTH,
             BAR_HEIGHT,
             {
@@ -151,8 +165,8 @@
             }
         );
         barLeft = Matter.Bodies.rectangle(
-            GAME_WIDTH / 2 - BAR_WIDTH / 2 + BLOCK_OFFSET,
-            $leftY - BLOCK_OFFSET / 2 + ($rightY - $leftY) / 13,
+            barLeftX,
+            barLeftY,
             BAR_WIDTH / 40,
             BAR_HEIGHT * 5,
             {
@@ -166,8 +180,8 @@
             }
         );
         barRight = Matter.Bodies.rectangle(
-            GAME_WIDTH / 2 + BAR_WIDTH / 2 - BLOCK_OFFSET,
-            $rightY - BLOCK_OFFSET / 2 - ($rightY - $leftY) / 13,
+            barRightX,
+            barRightY,
             BAR_WIDTH / 40,
             BAR_HEIGHT * 5,
             {
@@ -183,22 +197,26 @@
 
         Matter.World.add($world, [barLeft, barRight, barBody]);
 
-        PIXI.Assets.load(barImage).then((r) => {
-            barBodySprite = PIXI.Sprite.from(r);
+        PIXI.Assets.add({ alias: 'barBody', src: barImage });
+        PIXI.Assets.add({ alias: 'barBlock', src: barBlockImage });
+
+        PIXI.Assets.load(['barBody', 'barBlock']).then((r) => {
+
+            barBodySprite = PIXI.Sprite.from(r.barBody);
             barBodySprite.anchor.set(0.5)
-            barBodySprite.scale = { x: 1.1, y: 0.6 }
+            barBodySprite.scale = { x: 1.2, y: 0.6 }
+
+            barLeftSprite = PIXI.Sprite.from(r.barBlock);
+            barLeftSprite.anchor.set(0.5)
+
+            barRightSprite = PIXI.Sprite.from(r.barBlock);
+            barRightSprite.anchor.set(0.5)
+
             updateBody()
             $pixiApplication.stage.addChild(barBodySprite)
+            $pixiApplication.stage.addChild(barLeftSprite)
+            $pixiApplication.stage.addChild(barRightSprite)
         })
-
-        barLeftRect = new PIXI.Graphics()
-            .beginFill(0xFFFF00)
-            .drawRect(GAME_WIDTH / 2 - BAR_WIDTH / 2 + BLOCK_OFFSET, $leftY - BLOCK_OFFSET / 2 + ($rightY - $leftY) / 13, BAR_WIDTH / 40, BAR_HEIGHT * 5)
-            .endFill();
-
-        barLeftRect.pivot.set(BAR_WIDTH/2, BAR_HEIGHT/2)
-
-        $pixiApplication.stage.addChild(barLeftRect)
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
