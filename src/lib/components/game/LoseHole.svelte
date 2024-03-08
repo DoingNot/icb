@@ -1,6 +1,6 @@
 <script lang="ts">
     import Matter from 'matter-js'
-    import { world } from "$lib/utils/game/createEngine";
+    import { world } from "$lib/utils/game/Engine";
 
     export let x: number
     export let y: number

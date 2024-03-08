@@ -6,7 +6,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from '$lib/components/game/constants';
 export const engine: any = writable()
 export const world: any = writable()
 
-export function createEngine() {
+export function Engine() {
     const matterEngine = Matter.Engine.create();
     const matterWorld = matterEngine.world;
 
@@ -27,7 +27,7 @@ export function createEngine() {
     Matter.Runner.run(runner, matterEngine)
 
     Matter.Events.on(matterEngine, 'collisionStart', (event) => {
-        console.log('Collision detected!', event);
+        // console.log('Collision detected!', event);
     });
 
     engine.set(matterEngine)
