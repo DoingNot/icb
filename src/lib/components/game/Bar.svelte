@@ -4,14 +4,15 @@
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
     import { world } from '$lib/utils/game/createEngine';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, PIXI_MATTER_RATIO } from './constants'
 
 
     const leftY = tweened(500, {
-        duration: 5,
+        duration: TWEEN_DURATION,
     });
 
     const rightY = tweened(500, {
-        duration: 5,
+        duration: TWEEN_DURATION,
     });
 
     let increaseLeftTimeoutId: number | undefined = undefined;
@@ -21,11 +22,18 @@
 
     const updateBody = () => {
         Matter.Body.setPosition(barBody, {
-            x: barWidth / 2,
+            x: BAR_WIDTH / 2,
             y: ($leftY + $rightY) / 2,
         });
         Matter.Body.setAngle(barBody, barRotation);
-        console.log($world)
+        Matter.Body.setPosition(barLeft, {
+            x: BLOCK_OFFSET / 2,
+            y: $leftY - BLOCK_OFFSET / 2
+        })
+        Matter.Body.setPosition(barRight, {
+            x: BAR_WIDTH - (BLOCK_OFFSET / 2),
+            y: $rightY - BLOCK_OFFSET / 2
+        })
     }
 
     const increaseLeftY = async () => {
@@ -73,38 +81,38 @@
     };
 
     const keyDownHandler = async (event: KeyboardEvent) => {
-        if (event.key === 'w' && increaseLeftTimeoutId === undefined) {
+        if (event.key === KEY_LEFT_UP && increaseLeftTimeoutId === undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
             await increaseLeftY();
         }
-        if (event.key === 's' && decreaseLeftTimeoutId === undefined) {
+        if (event.key === KEY_LEFT_DOWN && decreaseLeftTimeoutId === undefined) {
             decreaseLeftTimeoutId = setTimeout(decreaseLeftY, 0);
             await decreaseLeftY();
         }
-        if (event.key === 'o' && increaseRightTimeoutId === undefined) {
+        if (event.key === KEY_RIGHT_UP && increaseRightTimeoutId === undefined) {
             increaseRightTimeoutId = setTimeout(increaseRightY, 0);
             await increaseRightY();
         }
-        if (event.key === 'l' && decreaseRightTimeoutId === undefined) {
+        if (event.key === KEY_RIGHT_DOWN && decreaseRightTimeoutId === undefined) {
             decreaseRightTimeoutId = setTimeout(decreaseRightY, 0);
             await decreaseRightY();
         }
     };
 
     const keyUpHandler = (event: KeyboardEvent) => {
-        if (event.key === 'w') {
+        if (event.key === KEY_LEFT_UP) {
             clearTimeout(increaseLeftTimeoutId);
             increaseLeftTimeoutId = undefined;
         }
-        if (event.key === 's') {
+        if (event.key === KEY_LEFT_DOWN) {
             clearTimeout(decreaseLeftTimeoutId);
             decreaseLeftTimeoutId = undefined;
         }
-        if (event.key === 'o') {
+        if (event.key === KEY_RIGHT_UP) {
             clearTimeout(increaseRightTimeoutId);
             increaseRightTimeoutId = undefined;
         }
-        if (event.key === 'l') {
+        if (event.key === KEY_RIGHT_DOWN) {
             clearTimeout(decreaseRightTimeoutId);
             decreaseRightTimeoutId = undefined;
         }
@@ -112,21 +120,43 @@
 
 
     let barBody;
+    let barLeft;
+    let barRight;
 
     onMount(() => {
         barBody = Matter.Bodies.rectangle(
-            barWidth/ 2,
+            BAR_WIDTH / 2,
             ($leftY + $rightY) / 2,
-            barWidth,
-            barHeight,
+            BAR_WIDTH,
+            BAR_HEIGHT,
             {
                 frictionAir: 0,
                 isStatic: true,
                 label: 'Bar',
             }
         );
+        barLeft = Matter.Bodies.rectangle(
+            BLOCK_OFFSET / 2,
+            $leftY - BLOCK_OFFSET / 2,
+            BAR_WIDTH / 40,
+            BAR_HEIGHT * 5,
+            {
+                isStatic: true,
+                label: 'BarLeft'
+            }
+        );
+        barRight = Matter.Bodies.rectangle(
+            BAR_WIDTH - (BLOCK_OFFSET / 2),
+            $rightY - BLOCK_OFFSET / 2,
+            BAR_WIDTH / 40,
+            BAR_HEIGHT * 5,
+            {
+                isStatic: true,
+                label: 'BarLeft'
+            }
+        );
 
-        Matter.World.add($world, barBody);
+        Matter.World.add($world, [barBody, barLeft, barRight]);
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
@@ -140,33 +170,30 @@
         };
     });
 
-    const BLOCK_OFFSET = 32;
-    $: barHeight = 20;
-    $: barWidth = 390;
     $: leftX = 0;
-    $: rightX = barWidth;
-    $: barRotation = Math.atan2(barWidth, $leftY - $rightY) - Math.PI/2;
+    $: rightX = BAR_WIDTH;
+    $: barRotation = Math.atan2(BAR_WIDTH, $leftY - $rightY) - Math.PI/2;
 </script>
 
 <Rectangle
-    scale={{ x: 0.2, y: 0.8 }}
-    backgroundColor={0xff00ff}
+    scale={{ x: (BAR_WIDTH / 40) / PIXI_MATTER_RATIO, y: BAR_HEIGHT * 5 / PIXI_MATTER_RATIO }}
+    backgroundColor={BAR_COLOR}
     y={$leftY - BLOCK_OFFSET}
-    x={leftX + BLOCK_OFFSET / 6}
-    pivot={{ x: 0, y: barHeight / 2 }}
+    x={leftX + BLOCK_OFFSET / 2}
+    pivot={{ x: 0, y: BAR_HEIGHT / 3 }}
 />
 <Rectangle
-    scale={{ x: 0.2, y: 0.8 }}
-    backgroundColor={0xff00ff}
+    scale={{ x: (BAR_WIDTH / 40) / PIXI_MATTER_RATIO, y: BAR_HEIGHT * 5 / PIXI_MATTER_RATIO }}
+    backgroundColor={BAR_COLOR}
     y={$rightY - BLOCK_OFFSET}
-    x={rightX - BLOCK_OFFSET / 6}
-    pivot={{ x: 0, y: barHeight / 2 }}
+    x={rightX - BLOCK_OFFSET / 3}
+    pivot={{ x: 0, y: BAR_HEIGHT / 2 }}
 />
 <Rectangle
-    scale={{ x: 10, y: 0.2 }}
-    backgroundColor={0xff00ff}
+    scale={{ x: BAR_WIDTH / PIXI_MATTER_RATIO, y: BAR_HEIGHT / PIXI_MATTER_RATIO }}
+    backgroundColor={BAR_COLOR}
     y={($leftY + $rightY) / 2}
-    x={barWidth/2}
+    x={BAR_WIDTH/2}
     pivot={{ x: 25, y: 25 }}
     rotation={barRotation}
 />

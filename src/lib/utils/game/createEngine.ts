@@ -13,11 +13,6 @@ export function createEngine() {
         engine: matterEngine
     });
 
-    const ball = Matter.Bodies.circle(100, 100, 20);
-    const ground = Matter.Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
-
-    Matter.Composite.add(matterWorld, [ball, ground]);
-
     Matter.Render.run(render)
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, matterEngine)
