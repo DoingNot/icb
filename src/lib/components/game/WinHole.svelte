@@ -4,7 +4,7 @@
 
     export let x: number
     export let y: number
-    export let size = 22
+    export let size = 20
     export let label: string
 
     const loseHole = Matter.Bodies.circle(

@@ -11,7 +11,11 @@ export const TWEEN_DURATION = 5
 export const BAR_WIDTH = 440
 export const BAR_HEIGHT = 8
 export const BLOCK_OFFSET = 40
-export const BAR_COLOR = '0xff00ff'
+export const BAR_COLOR = '#BFBCB3'
+export const BAR_STROKE_COLOR = '#464542'
+export const BAR_LINE_WIDTH = 3
 
-export const BALL_COLOR = '0xffffff'
+export const BALL_COLOR = '#BFBCB3'
+export const BALL_STROKE_COLOR = '#464542'
+export const BALL_LINE_WIDTH = 3
 

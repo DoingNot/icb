@@ -3,7 +3,7 @@
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
     import { world } from '$lib/utils/game/createEngine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT } from './constants'
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH } from './constants'
 
 
     const leftY = tweened(GAME_HEIGHT - 100, {
@@ -36,7 +36,7 @@
     }
 
     const increaseLeftY = async () => {
-        if($rightY - $leftY > 150) {
+        if($rightY - $leftY > 150 || $leftY < 100) {
             return
         }
         leftY.set($leftY - 3);
@@ -47,7 +47,7 @@
     };
 
     const decreaseLeftY = async () => {
-        if($leftY - $rightY > 150) {
+        if($leftY - $rightY > 150 || $leftY > GAME_HEIGHT - 80) {
             return
         }
         leftY.set($leftY + 3);
@@ -58,7 +58,7 @@
     };
 
     const increaseRightY = async () => {
-        if($leftY - $rightY > 150) {
+        if($leftY - $rightY > 150 || $rightY < 100) {
             return
         }
         rightY.set($rightY - 3);
@@ -69,7 +69,7 @@
     };
 
     const decreaseRightY = async () => {
-        if($rightY - $leftY > 150) {
+        if($rightY - $leftY > 150 || $rightY > GAME_HEIGHT - 80) {
             return
         }
         rightY.set($rightY + 3);
@@ -118,9 +118,9 @@
     };
 
 
-    let barBody;
-    let barLeft;
-    let barRight;
+    let barBody: Matter.Body;
+    let barLeft: Matter.Body;
+    let barRight: Matter.Body;
 
     onMount(() => {
         barBody = Matter.Bodies.rectangle(
@@ -133,7 +133,9 @@
                 isStatic: true,
                 label: 'Bar',
                 render: {
-                    fillStyle: BAR_COLOR
+                    fillStyle: BAR_COLOR,
+                    strokeStyle: BAR_STROKE_COLOR,
+                    lineWidth: BAR_LINE_WIDTH
                 }
             }
         );
@@ -146,7 +148,9 @@
                 isStatic: true,
                 label: 'BarLeft',
                 render: {
-                    fillStyle: BAR_COLOR
+                    fillStyle: BAR_COLOR,
+                    strokeStyle: BAR_STROKE_COLOR,
+                    lineWidth: BAR_LINE_WIDTH
                 }
             }
         );
@@ -159,12 +163,14 @@
                 isStatic: true,
                 label: 'BarLeft',
                 render: {
-                    fillStyle: BAR_COLOR
+                    fillStyle: BAR_COLOR,
+                    strokeStyle: BAR_STROKE_COLOR,
+                    lineWidth: BAR_LINE_WIDTH
                 }
             }
         );
 
-        Matter.World.add($world, [barBody, barLeft, barRight]);
+        Matter.World.add($world, [barLeft, barRight, barBody]);
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);

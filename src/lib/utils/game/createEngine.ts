@@ -17,7 +17,7 @@ export function createEngine() {
             width: GAME_WIDTH,
             height: GAME_HEIGHT,
             pixelRatio: DEVICE_RATIO,
-            background: '#111417',
+            background: '#D0AE2D',
             wireframes: false
         }
     });
