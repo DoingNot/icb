@@ -8,7 +8,7 @@
     <LoseHole
         x={loseHole.x}
         y={loseHole.y}
-        label={`loseHole_${index}`}
+        label={`loseHole_${index + 1}`}
         size={loseHole.size}
     />
 {/each}
@@ -18,7 +18,7 @@
         level={winHole.level}
         x={winHole.x}
         y={winHole.y}
-        label={`winHole_${index}`}
+        label={`winHole_${index + 1}`}
         size={winHole.size}
     />
 {/each}

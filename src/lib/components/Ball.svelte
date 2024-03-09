@@ -7,6 +7,7 @@
     import { BALL_COLOR, BALL_STROKE_COLOR, BALL_LINE_WIDTH, GAME_HEIGHT, GAME_WIDTH, BALL_DROPSHADOW_OPTIONS } from '$lib/utils/constants';
     import ballImage from '../assets/ball.png'
     import { onMount } from 'svelte';
+    import { reset } from '$lib/utils/stores';
 
     let ball: PIXI.Sprite
     let matterBall: Matter.Body
@@ -51,6 +52,10 @@
         }
     }
 
+    $: if($reset) {
+        reset.set(false)
+        console.log('reset..')
+    }
 
 </script>
 

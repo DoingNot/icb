@@ -2,6 +2,7 @@ import Matter from 'matter-js'
 import { writable } from 'svelte/store';
 import { DEVICE_RATIO } from './utils';
 import { GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
+import { lives, reset, level } from './stores';
 
 export const engine: any = writable();
 export const world: any = writable();
@@ -27,7 +28,15 @@ export function Engine() {
     Matter.Runner.run(runner, matterEngine)
 
     Matter.Events.on(matterEngine, 'collisionStart', (event) => {
-        console.log('Collision detected!', event);
+        for(const pair of event.pairs) {
+            const isLoseHole = (pair.bodyA.label === 'Ball' && ['loseHole', 'center'].every((s) => pair.bodyB.label.includes(s))) ||
+                               (pair.bodyB.label === 'Ball' && ['loseHole', 'center'].every((s) => pair.bodyA.label.includes(s)))
+            if(isLoseHole) {
+                console.log(pair.bodyA.label, pair.bodyB.label)
+                lives.set(2)
+                reset.set(true)
+            }
+        }
     });
 
     engine.set(matterEngine)

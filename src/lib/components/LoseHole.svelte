@@ -21,9 +21,6 @@
             render: {
                 fillStyle: '#111417',
             },
-            collisionFilter: {
-                mask: 0
-            }
         }
     );
     const loseHoleCenter = Matter.Bodies.circle(
@@ -37,9 +34,6 @@
             render: {
                 fillStyle: 'red',
             },
-            collisionFilter: {
-                mask: 0
-            }
         }
     )
     Matter.Composite.add($world, [loseHole, loseHoleCenter])
