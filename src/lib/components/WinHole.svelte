@@ -3,14 +3,15 @@
     import * as PIXI from 'pixi.js';
     import { pixiApplication } from '$lib/utils/App';
     import { world } from "$lib/utils/Engine";
-    import loseHoleImage from '../assets/losehole.png';
+    import winHoleImage from '../assets/winhole.png';
 
+    export let level: number
     export let x: number
     export let y: number
-    export let size = 20
+    export let size: number
     export let label: string
 
-    const loseHole = Matter.Bodies.circle(
+    const winHole = Matter.Bodies.circle(
         x,
         y,
         size,
@@ -23,14 +24,26 @@
             }
         }
     );
-    Matter.Composite.add($world, loseHole)
+    Matter.Composite.add($world, winHole)
 
-    PIXI.Assets.load(loseHoleImage).then((r) => {
-        const loseHoleSprite = PIXI.Sprite.from(r)
-        loseHoleSprite.anchor.set(0.5)
-        loseHoleSprite.position.set(x, y)
-        loseHoleSprite.scale = { x: size, y: size }
+    PIXI.Assets.load(winHoleImage).then((r) => {
+        const winHoleSprite = PIXI.Sprite.from(r)
+        winHoleSprite.anchor.set(0.5)
 
-        $pixiApplication.stage.addChild(loseHoleSprite)
+        const style = new PIXI.TextStyle({
+            fontWeight: "bold"
+        });
+        const text = new PIXI.Text(level, style);
+        text.position.set(-8, -68)
+
+        const winHoleContainer = new PIXI.Container();
+
+        winHoleContainer.position.set(x, y)
+        winHoleContainer.scale = { x: size/40, y: size/40 }
+
+        winHoleContainer.addChild(winHoleSprite);
+        winHoleContainer.addChild(text);
+
+        $pixiApplication.stage.addChild(winHoleContainer);
     })
 </script>
