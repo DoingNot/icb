@@ -20,10 +20,29 @@
             isSensor: true,
             render: {
                 fillStyle: '#111417',
+            },
+            collisionFilter: {
+                mask: 0
             }
         }
     );
-    Matter.Composite.add($world, loseHole)
+    const loseHoleCenter = Matter.Bodies.circle(
+        x,
+        y,
+        size/5,
+        {
+            label: `${label}_center`,
+            isStatic: true,
+            isSensor: true,
+            render: {
+                fillStyle: 'red',
+            },
+            collisionFilter: {
+                mask: 0
+            }
+        }
+    )
+    Matter.Composite.add($world, [loseHole, loseHoleCenter])
 
     PIXI.Assets.load(loseHoleImage).then((r) => {
         const loseHoleSprite = PIXI.Sprite.from(r)

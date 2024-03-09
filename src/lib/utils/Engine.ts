@@ -27,7 +27,7 @@ export function Engine() {
     Matter.Runner.run(runner, matterEngine)
 
     Matter.Events.on(matterEngine, 'collisionStart', (event) => {
-        // console.log('Collision detected!', event);
+        console.log('Collision detected!', event);
     });
 
     engine.set(matterEngine)

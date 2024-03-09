@@ -45,8 +45,10 @@
     });
 
     const update = () => {
-        ball?.position.set(matterBall.position.x, matterBall.position.y - 3)
-        ball.rotation = matterBall.angle
+        if(ball) {
+            ball.position.set(matterBall.position.x, matterBall.position.y - 3)
+            ball.rotation = matterBall.angle
+        }
     }
 
 
