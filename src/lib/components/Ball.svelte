@@ -1,10 +1,11 @@
 <script lang="ts">
     import Matter from 'matter-js'
     import * as PIXI from 'pixi.js';
-    import { pixiApplication } from '$lib/utils/game/App';
-    import { world } from "$lib/utils/game/Engine";
-    import { BALL_COLOR, BALL_STROKE_COLOR, BALL_LINE_WIDTH, GAME_HEIGHT, GAME_WIDTH } from './constants';
-    import ballImage from '../../assets/ball.png'
+    import { DropShadowFilter } from '@pixi/filter-drop-shadow'
+    import { pixiApplication } from '$lib/utils/App';
+    import { world } from "$lib/utils/Engine";
+    import { BALL_COLOR, BALL_STROKE_COLOR, BALL_LINE_WIDTH, GAME_HEIGHT, GAME_WIDTH, BALL_DROPSHADOW_OPTIONS } from '$lib/utils/constants';
+    import ballImage from '../assets/ball.png'
     import { onMount } from 'svelte';
 
     let ball: PIXI.Sprite
@@ -13,7 +14,7 @@
     onMount(() => {
         matterBall = Matter.Bodies.circle(
             GAME_WIDTH / 2,
-            GAME_HEIGHT - 150,
+            GAME_HEIGHT - 140,
             19,
             {
                 label: 'Ball',
@@ -32,19 +33,22 @@
 
         PIXI.Assets.load(ballImage).then((r) => {
             ball = PIXI.Sprite.from(r);
-            $pixiApplication.stage.addChild(ball)
+            const ballContainer = new PIXI.Container();
+            ballContainer.addChild(ball)
+            ballContainer.filters = [new DropShadowFilter(BALL_DROPSHADOW_OPTIONS)];
+            $pixiApplication.stage.addChild(ballContainer)
             ball.anchor.set(0.5)
             ball.scale = { x: 0.7, y: 0.7 }
         })
-    })
+
+        setInterval(update, 1000 / 60)
+    });
 
     const update = () => {
-        ball.position.set(matterBall.position.x, matterBall.position.y)
+        ball?.position.set(matterBall.position.x, matterBall.position.y - 3)
+        ball.rotation = matterBall.angle
     }
 
-    $: if(ball) {
-        setInterval(update, 10)
-    }
-    $: console.log(ball?.rotation, 'ahh', matterBall?.angle)
+
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { App, pixiApplication } from '$lib/utils/game/App';
+    import { App, pixiApplication } from '$lib/utils/App';
 
     onMount(() => {
         App()

@@ -1,10 +1,10 @@
 import Matter from 'matter-js'
 import { writable } from 'svelte/store';
 import { DEVICE_RATIO } from './utils';
-import { GAME_HEIGHT, GAME_WIDTH } from '$lib/components/game/constants';
+import { GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
 
-export const engine: any = writable()
-export const world: any = writable()
+export const engine: any = writable();
+export const world: any = writable();
 
 export function Engine() {
     const matterEngine = Matter.Engine.create();
@@ -17,7 +17,7 @@ export function Engine() {
             width: GAME_WIDTH,
             height: GAME_HEIGHT,
             pixelRatio: DEVICE_RATIO,
-            background: '#D0AE2D',
+            background: BACKGROUND_COLOR,
             wireframes: false
         }
     });

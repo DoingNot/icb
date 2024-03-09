@@ -1,5 +1,6 @@
 export const GAME_WIDTH = 500
 export const GAME_HEIGHT = 800
+export const BACKGROUND_COLOR = '#D19E11'
 
 export const KEY_LEFT_UP = 'w'
 export const KEY_LEFT_DOWN = 's'
@@ -14,8 +15,20 @@ export const BLOCK_OFFSET = 10
 export const BAR_COLOR = '#BFBCB3'
 export const BAR_STROKE_COLOR = '#464542'
 export const BAR_LINE_WIDTH = 3
+export const BAR_DROPSHADOW_OPTIONS = {
+    'alpha': 0.65,
+    'blur': 3,
+    'color': 0x1A160A,
+    'offset': { x: 0, y: 10 },
+    'quality': 10
+}
 
 export const BALL_COLOR = '#BFBCB3'
 export const BALL_STROKE_COLOR = '#464542'
 export const BALL_LINE_WIDTH = 3
-
+export const BALL_DROPSHADOW_OPTIONS = {
+    'alpha': 0.65,
+    'color': 0x1A160A,
+    'offset': { x: 0, y: 9 },
+    'quality': 10
+}

@@ -1,6 +1,6 @@
 <script lang="ts">
     import Matter from 'matter-js'
-    import { Engine, engine, world } from '$lib/utils/game/Engine';
+    import { Engine, engine, world } from '$lib/utils/Engine';
 
     Engine()
 

@@ -89,6 +89,7 @@ declare module '$env/static/private' {
 	export const LUA_CPATH: string;
 	export const npm_execpath: string;
 	export const XDG_DATA_DIRS: string;
+	export const npm_package_dependencies__pixi_filter_drop_shadow: string;
 	export const npm_package_devDependencies__sveltejs_adapter_auto: string;
 	export const npm_package_dependencies_pixi_js: string;
 	export const npm_command: string;
@@ -194,6 +195,7 @@ declare module '$env/dynamic/private' {
 		LUA_CPATH: string;
 		npm_execpath: string;
 		XDG_DATA_DIRS: string;
+		npm_package_dependencies__pixi_filter_drop_shadow: string;
 		npm_package_devDependencies__sveltejs_adapter_auto: string;
 		npm_package_dependencies_pixi_js: string;
 		npm_command: string;

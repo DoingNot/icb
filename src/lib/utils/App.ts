@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { writable } from 'svelte/store';
-import { DEVICE_RATIO } from '$lib/utils/game/utils';
-import { GAME_HEIGHT, GAME_WIDTH } from '$lib/components/game/constants';
+import { DEVICE_RATIO } from '$lib/utils/utils';
+import { GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
 
 export const pixiApplication: any = writable()
 
@@ -9,7 +9,7 @@ export function App() {
 
     const app = new PIXI.Application<HTMLCanvasElement>({
         backgroundAlpha: 1,
-        backgroundColor: 0x21252A,
+        backgroundColor: BACKGROUND_COLOR,
         autoDensity: true,
         resolution: DEVICE_RATIO,
         antialias: true,

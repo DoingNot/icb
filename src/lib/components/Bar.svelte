@@ -1,13 +1,14 @@
 <script lang="ts">
     import Matter from 'matter-js';
     import * as PIXI from 'pixi.js';
-    import { pixiApplication } from '$lib/utils/game/App';
+    import { DropShadowFilter } from '@pixi/filter-drop-shadow';
+    import { pixiApplication } from '$lib/utils/App';
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
-    import { world } from '$lib/utils/game/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH } from './constants'
-    import barImage from '../../assets/bar.png'
-    import barBlockImage from '../../assets/barblock.png'
+    import { world } from '$lib/utils/Engine';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS } from '$lib/utils/constants';
+    import barImage from '../assets/bar.png';
+    import barBlockImage from '../assets/barblock.png';
 
     const leftY = tweened(GAME_HEIGHT - 100, {
         duration: TWEEN_DURATION,
@@ -38,7 +39,7 @@
         });
         Matter.Body.setAngle(barBody, barRotation);
 
-        barBodySprite.position.set(barX, barY)
+        barBodySprite?.position.set(barX, barY)
         barBodySprite.rotation = barRotation
 
         Matter.Body.setPosition(barLeft, {
@@ -46,14 +47,14 @@
             y: barLeftY
         })
 
-        barLeftSprite.position.set(barLeftX, barLeftY)
+        barLeftSprite?.position.set(barLeftX, barLeftY)
 
         Matter.Body.setPosition(barRight, {
             x: barRightX,
             y: barRightY
         })
 
-        barRightSprite.position.set(barRightX, barRightY)
+        barRightSprite?.position.set(barRightX, barRightY)
     }
 
     const increaseLeftY = async () => {
@@ -212,10 +213,14 @@
             barRightSprite = PIXI.Sprite.from(r.barBlock);
             barRightSprite.anchor.set(0.5)
 
+            const barContainer = new PIXI.Container();
+            barContainer.addChild(barBodySprite);
+            barContainer.addChild(barLeftSprite);
+            barContainer.addChild(barRightSprite);
+            barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
+
             updateBody()
-            $pixiApplication.stage.addChild(barBodySprite)
-            $pixiApplication.stage.addChild(barLeftSprite)
-            $pixiApplication.stage.addChild(barRightSprite)
+            $pixiApplication.stage.addChild(barContainer);
         })
 
         window.addEventListener('keydown', keyDownHandler);
