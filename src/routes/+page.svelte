@@ -1,5 +1,6 @@
 <script lang="ts">
-    import Game from '$lib/Game.svelte'
+    import '../app.postcss';
+    import Game from '$lib/components/Game.svelte'
 </script>
 
 <Game />
