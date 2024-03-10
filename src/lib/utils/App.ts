@@ -31,6 +31,7 @@ export function App() {
     // to prevent that you can't scroll the page with touch on the canvas. https://github.com/pixijs/pixijs/issues/4824
     app.renderer.events.autoPreventDefault = false;
     app.renderer.view.style.touchAction = 'auto';
+    app.stage.sortableChildren = true;
 
     document.body.appendChild(app.view)
     pixiApplication.set(app)

@@ -2,29 +2,31 @@
     import Matter from 'matter-js';
     import * as PIXI from 'pixi.js';
     import { DropShadowFilter } from '@pixi/filter-drop-shadow';
-    import { pixiApplication, loadedAssets } from '$lib/utils/App';
+
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
+
+    import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y } from '$lib/utils/constants';
-    import { reset, lives } from '$lib/utils/stores';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW } from '$lib/utils/constants';
+    import { reset, lives, win } from '$lib/utils/stores';
 
     const leftY = tweened(BAR_STARTING_Y, {
-        duration: () => ($reset ? 500 : TWEEN_DURATION),
+        duration: () => ($reset || $win ? 500 : TWEEN_DURATION),
     });
 
     const rightY = tweened(BAR_STARTING_Y, {
-        duration: () => ($reset ? 500 : TWEEN_DURATION),
+        duration: () => ($reset || $win ? 500 : TWEEN_DURATION),
     });
 
     $: barY = (($leftY + $rightY) / 2);
     const barX = GAME_WIDTH / 2;
 
     const barLeftX = barX - BAR_WIDTH / 2 + BLOCK_OFFSET;
-    $: barLeftY = $leftY - BLOCK_OFFSET / 8 + ($rightY - $leftY) / 20 - 23
+    $: barLeftY = $leftY - BLOCK_OFFSET / 8 + ($rightY - $leftY) / 20 - 22
 
     const barRightX = barX + BAR_WIDTH / 2 - BLOCK_OFFSET;
-    $: barRightY = $rightY - BLOCK_OFFSET / 8 - ($rightY - $leftY) / 20 - 23;
+    $: barRightY = $rightY - BLOCK_OFFSET / 8 - ($rightY - $leftY) / 20 - 22;
 
     let increaseLeftTimeoutId: number | undefined = undefined;
     let decreaseLeftTimeoutId: number | undefined = undefined;
@@ -39,7 +41,7 @@
         Matter.Body.setAngle(barBody, barRotation);
 
         if(barBodySprite) {
-            barBodySprite?.position.set(barX, barY)
+            barBodySprite?.position.set(barX, barY - 6)
             barBodySprite.rotation = barRotation
         }
 
@@ -48,18 +50,18 @@
             y: barLeftY
         })
 
-        barLeftSprite?.position.set(barLeftX, barLeftY)
+        barLeftSprite?.position.set(barLeftX, barLeftY - 6)
 
         Matter.Body.setPosition(barRight, {
             x: barRightX,
             y: barRightY
         })
 
-        barRightSprite?.position.set(barRightX, barRightY)
+        barRightSprite?.position.set(barRightX, barRightY - 6)
     }
 
     const increaseLeftY = async () => {
-        if($rightY - $leftY > 150 || $leftY < 100 || $reset || $lives < 1) {
+        if($rightY - $leftY > BAR_MAX_SKEW || $leftY < 20 || $reset || $win || $lives < 1) {
             return
         }
         leftY.set($leftY - 3);
@@ -69,7 +71,7 @@
     };
 
     const decreaseLeftY = async () => {
-        if($leftY - $rightY > 150 || $leftY > GAME_HEIGHT - 80 || $reset || $lives < 1) {
+        if($leftY - $rightY > BAR_MAX_SKEW || $leftY > GAME_HEIGHT - 80 || $reset || $win || $lives < 1) {
             return
         }
         leftY.set($leftY + 3);
@@ -79,7 +81,7 @@
     };
 
     const increaseRightY = async () => {
-        if($leftY - $rightY > 150 || $rightY < 100 || $reset || $lives < 1) {
+        if($leftY - $rightY > BAR_MAX_SKEW || $rightY < 20 || $reset || $win || $lives < 1) {
             return
         }
         rightY.set($rightY - 3);
@@ -89,7 +91,7 @@
     };
 
     const decreaseRightY = async () => {
-        if($rightY - $leftY > 150 || $rightY > GAME_HEIGHT - 80 || $reset || $lives < 1) {
+        if($rightY - $leftY > BAR_MAX_SKEW || $rightY > GAME_HEIGHT - 80 || $reset || $win || $lives < 1) {
             return
         }
         rightY.set($rightY + 3);
@@ -150,7 +152,7 @@
             barX,
             barY,
             BAR_WIDTH,
-            BAR_HEIGHT,
+            BAR_HEIGHT * 3,
             {
                 frictionAir: 0,
                 isStatic: true,
@@ -234,7 +236,7 @@
 
     });
 
-    $: if($reset) {
+    $: if($reset || $win) {
         leftY.set(BAR_STARTING_Y)
         rightY.set(BAR_STARTING_Y)
     }

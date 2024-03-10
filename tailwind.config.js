@@ -5,9 +5,6 @@ export default {
         "./src/**/*.{svelte,js,ts,jsx,tsx}",
     ],
   theme: {
-    colors: {
-        'primaryDark': '#1B1B1C',
-    },
     extend: {},
   },
   plugins: [],
