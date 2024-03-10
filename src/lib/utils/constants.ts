@@ -22,10 +22,10 @@ export const EXTREME_HOLES_COUNT = 60
 
 export const BACKGROUND_COLOR = '#D19E11'
 
-export const KEY_LEFT_UP = 'w'
-export const KEY_LEFT_DOWN = 's'
-export const KEY_RIGHT_UP = 'o'
-export const KEY_RIGHT_DOWN = 'l'
+export const DEFAULT_KEY_LEFT_UP = 'w'
+export const DEFAULT_KEY_LEFT_DOWN = 's'
+export const DEFAULT_KEY_RIGHT_UP = 'o'
+export const DEFAULT_KEY_RIGHT_DOWN = 'l'
 
 export const TWEEN_DURATION = 5
 

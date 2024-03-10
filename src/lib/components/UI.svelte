@@ -2,13 +2,43 @@
     import { blur } from 'svelte/transition';
     import heart from '../assets/heart.png'
     import greyheart from '../assets/greyheart.png'
-    import { lives, lostLives, level, difficulty, holesContainer, config } from "$lib/utils/stores";
-    import { EASY_HOLES_COUNT, EXTREME_HOLES_COUNT, GAME_HEIGHT, GAME_WIDTH, HARD_HOLES_COUNT, NORMAL_HOLES_COUNT } from '$lib/utils/constants';
-    import { loaded, pixiApplication } from '$lib/utils/App';
+    import { lives, lostLives, level, difficulty, holesContainer, gameWon, leftUpKey, leftDownKey, rightUpKey, rightDownKey } from "$lib/utils/stores";
+    import { DEFAULT_KEY_LEFT_DOWN, DEFAULT_KEY_LEFT_UP, DEFAULT_KEY_RIGHT_DOWN, DEFAULT_KEY_RIGHT_UP, EASY_HOLES_COUNT, EXTREME_HOLES_COUNT, GAME_HEIGHT, GAME_WIDTH, HARD_HOLES_COUNT, NORMAL_HOLES_COUNT, WIN_HOLES_COUNT } from '$lib/utils/constants';
+    import { loaded } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
     import Matter from 'matter-js';
 
+    let leftUpInput: string;
+    let leftDownInput: string;
+    let rightUpInput: string;
+    let rightDownInput: string;
+
+    $: if(leftUpInput) {
+        if([$leftDownKey, $rightUpKey, $rightDownKey].includes(leftUpInput)) leftUpInput = ''
+        leftUpInput = leftUpInput.replace(/[^a-z0-9]/g, '')
+        leftUpKey.set(leftUpInput)
+    }
+
+    $: if(leftDownInput) {
+        if([$leftUpKey, $rightUpKey, $rightDownKey].includes(leftDownInput)) leftDownInput = ''
+        leftDownInput = leftDownInput.replace(/[^a-z0-9]/g, '')
+        leftDownKey.set(leftDownInput)
+    }
+
+    $: if(rightUpInput) {
+        if([$rightDownKey, $leftUpKey, $leftDownKey].includes(rightUpInput)) rightUpInput = ''
+        rightUpInput = rightUpInput.replace(/[^a-z0-9]/g, '')
+        rightUpKey.set(rightUpInput)
+    }
+
+    $: if(rightDownInput) {
+        if([$leftDownKey, $rightUpKey, $leftUpKey].includes(rightDownInput)) rightDownInput = ''
+        rightDownInput = rightDownInput.replace(/[^a-z0-9]/g, '')
+        rightDownKey.set(rightDownInput)
+    }
+
     $: showRestartScreen = $lives < 1
+    let showOptions = true
     let difficultyText: string;
 
     const restartGame = () => {
@@ -17,6 +47,11 @@
     }
 
     const resetBoard = () => {
+        if(!$leftUpKey) leftUpKey.set(DEFAULT_KEY_LEFT_UP)
+        if(!$leftDownKey) leftDownKey.set(DEFAULT_KEY_LEFT_DOWN)
+        if(!$rightUpKey) rightUpKey.set(DEFAULT_KEY_RIGHT_UP)
+        if(!$rightDownKey) rightDownKey.set(DEFAULT_KEY_RIGHT_DOWN)
+
         level.set(1)
         lives.set(3)
         difficulty.set(0)
@@ -25,14 +60,17 @@
     }
     
     const setDifficulty = (difficultyName: string, numHoles: number) => {
+        resetBoard()
         difficultyText = difficultyName;
-        difficulty.set(numHoles);
+        setTimeout(() => difficulty.set(numHoles), 1);
+        gameWon.set(false)
+        showOptions = false
     }
 
-    $: if($level === 11) {
+    $: if($level === WIN_HOLES_COUNT + 1) {
+        gameWon.set(true)
+        showOptions = true
         resetBoard()
-        level.set(1)
-        lives.set(3)
     }
 
 </script>
@@ -41,7 +79,7 @@
     <div class="absolute w-screen h-screen flex justify-center items-center z-50">
         <div class={`w-[${GAME_WIDTH}px] h-${GAME_HEIGHT}px justify-center flex items-center`}>
             <div class="bottom-10 flex absolute flex-col gap-1 justify-center items-center">
-                <h1 class="h1 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => resetBoard()}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
+                <h1 class="h1 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => showOptions = true}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
                 <div class="flex flex-row gap-1">
                     {#each Array.from({ length: $lives }, (_, i) => i + 1) as _life}
                         <img src={heart} alt=''/>
@@ -60,15 +98,62 @@
                 </div>
             {/if}
 
-            {#if !$difficulty || $level === 11}
-                <div class="absolute w-screen h-screen bg-gray-950/50 backdrop-blur-sm z-40" transition:blur={{ delay: 20, duration: 250 }}/>
-                <div class="flex flex-col justify-between absolute bg-[#1b1b1c] rounded-xl p-8 align-center w-[480px] h-[180px] z-50" transition:blur={{ delay: 20, duration: 150 }}>
-                    <h1 class="h1 font-bold text-2xl text-slate-200 text-center">{$level === 11 ? 'You Won! Play Again?' : 'Select Difficulty'}</h1>
-                    <div class="flex flex-row gap-2">
-                        <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Easy', EASY_HOLES_COUNT)}>Easy</button>
-                        <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Normal', NORMAL_HOLES_COUNT)}>Normal</button>
-                        <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Hard', HARD_HOLES_COUNT)}>Hard</button>
-                        <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Extreme', EXTREME_HOLES_COUNT)}>Extreme</button>
+            {#if showOptions}
+                <div class="absolute w-screen h-screen bg-gray-950/50 backdrop-blur-sm z-40" on:click={() => showOptions = false} transition:blur={{ delay: 20, duration: 250 }}/>
+                <div class="flex flex-col absolute w-screen-hscreen gap-4">
+                    <div class="flex flex-col justify-between bg-[#1b1b1c] rounded-xl p-8 align-center w-[500px] h-[180px] z-50" transition:blur={{ delay: 20, duration: 150 }}>
+                        <h1 class="h1 font-bold text-2xl text-slate-200 text-center">{$gameWon ? 'You Won! Play Again?' : 'Difficulty'}</h1>
+                        <div class="flex flex-row gap-2">
+                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Easy', EASY_HOLES_COUNT)}>Easy</button>
+                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Normal', NORMAL_HOLES_COUNT)}>Normal</button>
+                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Hard', HARD_HOLES_COUNT)}>Hard</button>
+                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Extreme', EXTREME_HOLES_COUNT)}>Extreme</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-between bg-[#1b1b1c] rounded-xl p-8 align-center w-[500px] h-[180px] gap-4 z-50" transition:blur={{ delay: 20, duration: 150 }}>
+                        <h1 class="h1 font-bold text-2xl text-slate-200 text-center">Options</h1>
+                        <div class="flex flex-row gap-2">
+                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {leftUpKey.set(''); leftUpInput=''}}>
+                                <div class="flex flex-col h-full justify-center">
+                                    <p class="text-xs text-slate-300">Left Up</p>
+                                    {#if $leftUpKey}
+                                        <p>{$leftUpKey}</p>
+                                    {:else}
+                                        <input class="peer flex h-6 w-full justify-center bg-transparent pt-4 pb-1.5 font-sans text-center text-sm font-normal text-blue-gray-700 outline outline-0 transition-all" type="text" bind:value={leftUpInput} autofocus/>
+                                    {/if}
+                                </div>
+                            </button>
+                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {leftDownKey.set(''); leftDownInput=''}}>
+                                <div class="flex flex-col h-full justify-center">
+                                    <p class="text-xs text-slate-300">Left Down</p>
+                                    {#if $leftDownKey}
+                                        <p>{$leftDownKey}</p>
+                                    {:else}
+                                        <input class="peer flex h-6 w-full justify-center bg-transparent pt-4 pb-1.5 font-sans text-center text-sm font-normal text-blue-gray-700 outline outline-0 transition-all" type="text" bind:value={leftDownInput} autofocus/>
+                                    {/if}
+                                </div>
+                            </button>
+                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {rightUpKey.set(''); rightUpInput=''}}>
+                                <div class="flex flex-col h-full justify-center">
+                                    <p class="text-xs text-slate-300">Right Up</p>
+                                    {#if $rightUpKey}
+                                        <p>{$rightUpKey}</p>
+                                    {:else}
+                                        <input class="peer flex h-6 w-full justify-center bg-transparent pt-4 pb-1.5 font-sans text-center text-sm font-normal text-blue-gray-700 outline outline-0 transition-all" type="text" bind:value={rightUpInput} autofocus/>
+                                    {/if}
+                                </div>
+                            </button>
+                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {rightDownKey.set(''); rightDownInput=''}}>
+                                <div class="flex flex-col h-full justify-center">
+                                    <p class="text-xs text-slate-300">Right Down</p>
+                                    {#if $rightDownKey}
+                                        <p>{$rightDownKey}</p>
+                                    {:else}
+                                        <input class="peer flex h-6 w-full justify-center bg-transparent pt-4 pb-1.5 font-sans text-center text-sm font-normal text-blue-gray-700 outline outline-0 transition-all" type="text" bind:value={rightDownInput} autofocus/>
+                                    {/if}
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             {/if}
