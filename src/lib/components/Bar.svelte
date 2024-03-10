@@ -8,8 +8,8 @@
 
     import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW } from '$lib/utils/constants';
-    import { reset, lives, win } from '$lib/utils/stores';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW } from '$lib/utils/constants';
+    import { reset, lives, win, leftUpKey, leftDownKey, rightUpKey, rightDownKey, difficulty } from '$lib/utils/stores';
 
     const leftY = tweened(BAR_STARTING_Y, {
         duration: () => ($reset || $win ? 500 : TWEEN_DURATION),
@@ -101,38 +101,38 @@
     };
 
     const keyDownHandler = async (event: KeyboardEvent) => {
-        if (event.key === KEY_LEFT_UP && increaseLeftTimeoutId === undefined) {
+        if (event.key === $leftUpKey && increaseLeftTimeoutId === undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
             await increaseLeftY();
         }
-        if (event.key === KEY_LEFT_DOWN && decreaseLeftTimeoutId === undefined) {
+        if (event.key === $leftDownKey && decreaseLeftTimeoutId === undefined) {
             decreaseLeftTimeoutId = setTimeout(decreaseLeftY, 0);
             await decreaseLeftY();
         }
-        if (event.key === KEY_RIGHT_UP && increaseRightTimeoutId === undefined) {
+        if (event.key === $rightUpKey && increaseRightTimeoutId === undefined) {
             increaseRightTimeoutId = setTimeout(increaseRightY, 0);
             await increaseRightY();
         }
-        if (event.key === KEY_RIGHT_DOWN && decreaseRightTimeoutId === undefined) {
+        if (event.key === $rightDownKey && decreaseRightTimeoutId === undefined) {
             decreaseRightTimeoutId = setTimeout(decreaseRightY, 0);
             await decreaseRightY();
         }
     };
 
     const keyUpHandler = (event: KeyboardEvent) => {
-        if (event.key === KEY_LEFT_UP) {
+        if (event.key === $leftUpKey) {
             clearTimeout(increaseLeftTimeoutId);
             increaseLeftTimeoutId = undefined;
         }
-        if (event.key === KEY_LEFT_DOWN) {
+        if (event.key === $leftDownKey) {
             clearTimeout(decreaseLeftTimeoutId);
             decreaseLeftTimeoutId = undefined;
         }
-        if (event.key === KEY_RIGHT_UP) {
+        if (event.key === $rightUpKey) {
             clearTimeout(increaseRightTimeoutId);
             increaseRightTimeoutId = undefined;
         }
-        if (event.key === KEY_RIGHT_DOWN) {
+        if (event.key === $rightDownKey) {
             clearTimeout(decreaseRightTimeoutId);
             decreaseRightTimeoutId = undefined;
         }
@@ -236,7 +236,7 @@
 
     });
 
-    $: if($reset || $win) {
+    $: if($reset || $win || !$difficulty) {
         leftY.set(BAR_STARTING_Y)
         rightY.set(BAR_STARTING_Y)
     }
