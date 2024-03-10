@@ -6,16 +6,17 @@
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS } from '$lib/utils/constants';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y } from '$lib/utils/constants';
     import barImage from '../assets/bar.png';
     import barBlockImage from '../assets/barblock.png';
+    import { reset } from '$lib/utils/stores';
 
-    const leftY = tweened(GAME_HEIGHT - 100, {
-        duration: TWEEN_DURATION,
+    const leftY = tweened(BAR_STARTING_Y, {
+        duration: () => ($reset ? 500 : TWEEN_DURATION),
     });
 
-    const rightY = tweened(GAME_HEIGHT - 100, {
-        duration: TWEEN_DURATION,
+    const rightY = tweened(BAR_STARTING_Y, {
+        duration: () => ($reset ? 500 : TWEEN_DURATION),
     });
 
     $: barY = (($leftY + $rightY) / 2);
@@ -32,15 +33,17 @@
     let increaseRightTimeoutId: number | undefined = undefined;
     let decreaseRightTimeoutId: number | undefined = undefined;
 
-    const updateBody = () => {
+    const update = () => {
         Matter.Body.setPosition(barBody, {
             x: barX,
             y: barY
         });
         Matter.Body.setAngle(barBody, barRotation);
 
-        barBodySprite?.position.set(barX, barY)
-        barBodySprite.rotation = barRotation
+        if(barBodySprite) {
+            barBodySprite?.position.set(barX, barY)
+            barBodySprite.rotation = barRotation
+        }
 
         Matter.Body.setPosition(barLeft, {
             x: barLeftX,
@@ -58,47 +61,43 @@
     }
 
     const increaseLeftY = async () => {
-        if($rightY - $leftY > 150 || $leftY < 100) {
+        if($rightY - $leftY > 150 || $leftY < 100 || $reset) {
             return
         }
         leftY.set($leftY - 3);
         if (increaseLeftTimeoutId !== undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
         }
-        updateBody()
     };
 
     const decreaseLeftY = async () => {
-        if($leftY - $rightY > 150 || $leftY > GAME_HEIGHT - 80) {
+        if($leftY - $rightY > 150 || $leftY > GAME_HEIGHT - 80 || $reset) {
             return
         }
         leftY.set($leftY + 3);
         if (decreaseLeftTimeoutId !== undefined) {
             decreaseLeftTimeoutId = setTimeout(decreaseLeftY, 0);
         }
-        updateBody()
     };
 
     const increaseRightY = async () => {
-        if($leftY - $rightY > 150 || $rightY < 100) {
+        if($leftY - $rightY > 150 || $rightY < 100 || $reset) {
             return
         }
         rightY.set($rightY - 3);
         if (increaseRightTimeoutId !== undefined) {
             increaseRightTimeoutId = setTimeout(increaseRightY, 0);
         }
-        updateBody()
     };
 
     const decreaseRightY = async () => {
-        if($rightY - $leftY > 150 || $rightY > GAME_HEIGHT - 80) {
+        if($rightY - $leftY > 150 || $rightY > GAME_HEIGHT - 80 || $reset) {
             return
         }
         rightY.set($rightY + 3);
         if (decreaseRightTimeoutId !== undefined) {
             decreaseRightTimeoutId = setTimeout(decreaseRightY, 0);
         }
-        updateBody()
     };
 
     const keyDownHandler = async (event: KeyboardEvent) => {
@@ -218,13 +217,17 @@
             barContainer.addChild(barLeftSprite);
             barContainer.addChild(barRightSprite);
             barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
+            barContainer.zIndex = 999
 
-            updateBody()
+            update()
             $pixiApplication.stage.addChild(barContainer);
         })
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
+
+        const updateLoop = setInterval(update, 1000 / 60)
+
         return () => {
             window.removeEventListener('keydown', keyDownHandler);
             window.removeEventListener('keyup', keyUpHandler);
@@ -232,7 +235,14 @@
             clearTimeout(decreaseLeftTimeoutId);
             clearTimeout(increaseRightTimeoutId);
             clearTimeout(decreaseRightTimeoutId);
+            clearInterval(updateLoop)
         };
+
     });
+
+    $: if($reset) {
+        leftY.set(BAR_STARTING_Y)
+        rightY.set(BAR_STARTING_Y)
+    }
 
 </script>

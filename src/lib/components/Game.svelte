@@ -1,4 +1,5 @@
 <script lang="ts">
+    import UI from "./UI.svelte";
     import PixiApplication from "./PixiApplication.svelte";
     import Engine from "./Engine.svelte";
     import Bar from "./Bar.svelte";
@@ -13,3 +14,5 @@
         <Holes />
     </Engine>
 </PixiApplication>
+
+<UI />

@@ -32,9 +32,12 @@ export function Engine() {
             const isLoseHole = (pair.bodyA.label === 'Ball' && ['loseHole', 'center'].every((s) => pair.bodyB.label.includes(s))) ||
                                (pair.bodyB.label === 'Ball' && ['loseHole', 'center'].every((s) => pair.bodyA.label.includes(s)))
             if(isLoseHole) {
-                console.log(pair.bodyA.label, pair.bodyB.label)
-                lives.set(2)
-                reset.set(true)
+                const loseHole = [pair.bodyA, pair.bodyB].find((v) => ['loseHole', 'center'].every((s) => v.label.includes(s))) 
+                reset.set({
+                    loseHoleIndex: Number(loseHole!.label.split('_')[1]) - 1,
+                    loseHoleX: loseHole!.position.x,
+                    loseHoleY: loseHole!.position.y 
+                })
             }
         }
     });

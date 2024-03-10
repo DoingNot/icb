@@ -10,20 +10,18 @@
     import { tweened } from 'svelte/motion';
     import { sineOut, quintIn } from 'svelte/easing';
     import { reset, lives } from '$lib/utils/stores';
+    import { writable } from 'svelte/store';
 
     let ball: PIXI.Sprite
     let matterBall: Matter.Body
-    let tweenXDuration = 0
-    let tweenYDuration = 0
-    let tweenAngleDuration = 0
 
-    const tweenedX = tweened(BALL_STARTING_X, {
-        duration: (() => tweenXDuration),
+    $: ballX = tweened(BALL_STARTING_X, {
+        duration: () => ($reset ? 300 : 0),
         easing: sineOut
     })
 
-    const tweenedY = tweened(BALL_STARTING_Y, {
-        duration: (() => tweenYDuration),
+    $: ballY = tweened(BALL_STARTING_Y, {
+        duration: () => ($reset ? 300 : 0),
     })
 
     let tweenedScale = tweened(0.7, {
@@ -36,16 +34,11 @@
         easing: quintIn
     })
 
-    let tweenedAngle = tweened(0, {
-        duration: (() => tweenAngleDuration),
-        easing: quintIn
-    })
-
     onMount(() => {
         matterBall = Matter.Bodies.circle(
             BALL_STARTING_X,
             BALL_STARTING_Y,
-            18,
+            19,
             {
                 label: 'Ball',
                 mass: 1,
@@ -81,50 +74,34 @@
     const update = () => {
         if(ball) {
             if($reset) {
-                Matter.Body.setPosition(matterBall, { x: $tweenedX, y: $tweenedY })
-            } else if (!$reset) {
-                tweenedX.set(matterBall.position.x)
-                tweenedY.set(matterBall.position.y)
-                tweenedAngle.set(matterBall.angle)
+                Matter.Body.setPosition(matterBall, {
+                    x: $ballX,
+                    y: $ballY
+                })
             }
-            ball.position.set(matterBall.position.x, matterBall.position.y - 4)
+
             ball.rotation = matterBall.angle
+
+            ball.position.set(matterBall.position.x, matterBall.position.y)
             ball.scale.set($tweenedScale)
             ball.alpha = $tweenedAlpha
-        }
-    }
-
-    const fallInHoleAnimation = () => {
-        if($reset) {
-            console.log(matterBall)
-            tweenXDuration = Math.min(Math.abs(400 / matterBall.velocity.x), 500)
-            tweenYDuration = Math.min(Math.abs(400 / matterBall.velocity.y), 500)
-            tweenedX.set($reset.loseHoleX)
-            tweenedY.set($reset.loseHoleY)
-
-            tweenAngleDuration = Math.min(Math.abs(400 /matterBall.angularSpeed), 500)
-            tweenedAngle.set(matterBall.angle + 500)
-
-            tweenedScale.set(0.3)
-            tweenedAlpha.set(0)
-
-            Matter.Body.setStatic(matterBall, true)
-            setTimeout(() => tweenedScale.set(0.7), 500)
-            setTimeout(() => tweenedAlpha.set(1), 550)
-            setTimeout(() => tweenXDuration = 0, 490)
-            setTimeout(() => tweenYDuration = 0, 490)
-            setTimeout(() => tweenedX.set(BALL_STARTING_X), 500)
-            setTimeout(() => tweenedY.set(BALL_STARTING_Y), 500)
-            setTimeout(() => Matter.Body.setStatic(matterBall, false), 520)
         }
     }
 
     $: if($reset) {
         lives.set($lives - 1)
 
-        fallInHoleAnimation()
+        ballX.set($reset.loseHoleX)
+        ballY.set($reset.loseHoleY)
 
-        setTimeout(() => reset.set(undefined), 550)
+        tweenedScale.set(0.3)
+        tweenedAlpha.set(0)
+
+        setTimeout(() => ballX.set(BALL_STARTING_X), 420)
+        setTimeout(() => ballY.set(BALL_STARTING_Y), 420)
+
+        setTimeout(() => reset.set(undefined), 850)
+        console.log('reset..', $reset, $lives)
     }
 
 </script>
