@@ -1,9 +1,8 @@
 <script lang="ts">
     import Matter from 'matter-js'
     import * as PIXI from 'pixi.js';
-    import { pixiApplication } from '$lib/utils/App';
+    import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from "$lib/utils/Engine";
-    import winHoleImage from '../assets/winhole.png';
 
     export let level: number
     export let x: number
@@ -26,24 +25,23 @@
     );
     Matter.Composite.add($world, winHole)
 
-    PIXI.Assets.load(winHoleImage).then((r) => {
-        const winHoleSprite = PIXI.Sprite.from(r)
-        winHoleSprite.anchor.set(0.5)
+    const r = $loadedAssets.winHole
+    const winHoleSprite = PIXI.Sprite.from(r)
+    winHoleSprite.anchor.set(0.5)
 
-        const style = new PIXI.TextStyle({
-            fontWeight: "bold"
-        });
-        const text = new PIXI.Text(level, style);
-        text.position.set(-8, -68)
+    const style = new PIXI.TextStyle({
+        fontWeight: "bold"
+    });
+    const text = new PIXI.Text(level, style);
+    text.position.set(-8, -68)
 
-        const winHoleContainer = new PIXI.Container();
+    const winHoleContainer = new PIXI.Container();
 
-        winHoleContainer.position.set(x, y)
-        winHoleContainer.scale = { x: size/40, y: size/40 }
+    winHoleContainer.position.set(x, y)
+    winHoleContainer.scale = { x: size/40, y: size/40 }
 
-        winHoleContainer.addChild(winHoleSprite);
-        winHoleContainer.addChild(text);
+    winHoleContainer.addChild(winHoleSprite);
+    winHoleContainer.addChild(text);
 
-        $pixiApplication.stage.addChild(winHoleContainer);
-    })
+    $pixiApplication.stage.addChild(winHoleContainer);
 </script>

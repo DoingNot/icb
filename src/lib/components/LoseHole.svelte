@@ -1,9 +1,8 @@
 <script lang="ts">
     import Matter from 'matter-js'
     import * as PIXI from 'pixi.js';
-    import { pixiApplication } from '$lib/utils/App';
+    import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import loseHoleImage from '../assets/losehole.png';
 
     export let x: number
     export let y: number
@@ -38,13 +37,12 @@
     )
     Matter.Composite.add($world, [loseHole, loseHoleCenter])
 
-    PIXI.Assets.load(loseHoleImage).then((r) => {
-        const loseHoleSprite = PIXI.Sprite.from(r)
-        loseHoleSprite.anchor.set(0.5)
-        loseHoleSprite.position.set(x, y)
-        loseHoleSprite.scale = { x: size/40, y: size/40 }
+    const r = $loadedAssets.loseHole
+    const loseHoleSprite = PIXI.Sprite.from(r)
+    loseHoleSprite.anchor.set(0.5)
+    loseHoleSprite.position.set(x, y)
+    loseHoleSprite.scale = { x: size/40, y: size/40 }
 
-        $pixiApplication.stage.addChild(loseHoleSprite)
-    })
+    $pixiApplication.stage.addChild(loseHoleSprite)
 
 </script>

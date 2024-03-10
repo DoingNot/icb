@@ -2,14 +2,12 @@
     import Matter from 'matter-js';
     import * as PIXI from 'pixi.js';
     import { DropShadowFilter } from '@pixi/filter-drop-shadow';
-    import { pixiApplication } from '$lib/utils/App';
+    import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
     import { world } from '$lib/utils/Engine';
     import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, KEY_LEFT_UP, KEY_LEFT_DOWN, KEY_RIGHT_UP, KEY_RIGHT_DOWN, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y } from '$lib/utils/constants';
-    import barImage from '../assets/bar.png';
-    import barBlockImage from '../assets/barblock.png';
-    import { reset } from '$lib/utils/stores';
+    import { reset, lives } from '$lib/utils/stores';
 
     const leftY = tweened(BAR_STARTING_Y, {
         duration: () => ($reset ? 500 : TWEEN_DURATION),
@@ -61,7 +59,7 @@
     }
 
     const increaseLeftY = async () => {
-        if($rightY - $leftY > 150 || $leftY < 100 || $reset) {
+        if($rightY - $leftY > 150 || $leftY < 100 || $reset || $lives < 1) {
             return
         }
         leftY.set($leftY - 3);
@@ -71,7 +69,7 @@
     };
 
     const decreaseLeftY = async () => {
-        if($leftY - $rightY > 150 || $leftY > GAME_HEIGHT - 80 || $reset) {
+        if($leftY - $rightY > 150 || $leftY > GAME_HEIGHT - 80 || $reset || $lives < 1) {
             return
         }
         leftY.set($leftY + 3);
@@ -81,7 +79,7 @@
     };
 
     const increaseRightY = async () => {
-        if($leftY - $rightY > 150 || $rightY < 100 || $reset) {
+        if($leftY - $rightY > 150 || $rightY < 100 || $reset || $lives < 1) {
             return
         }
         rightY.set($rightY - 3);
@@ -91,7 +89,7 @@
     };
 
     const decreaseRightY = async () => {
-        if($rightY - $leftY > 150 || $rightY > GAME_HEIGHT - 80 || $reset) {
+        if($rightY - $leftY > 150 || $rightY > GAME_HEIGHT - 80 || $reset || $lives < 1) {
             return
         }
         rightY.set($rightY + 3);
@@ -197,31 +195,27 @@
 
         Matter.World.add($world, [barLeft, barRight, barBody]);
 
-        PIXI.Assets.add({ alias: 'barBody', src: barImage });
-        PIXI.Assets.add({ alias: 'barBlock', src: barBlockImage });
+        const r = $loadedAssets
 
-        PIXI.Assets.load(['barBody', 'barBlock']).then((r) => {
+        barBodySprite = PIXI.Sprite.from(r.barBody);
+        barBodySprite.anchor.set(0.5)
+        barBodySprite.scale = { x: 1.8, y: 0.6 }
 
-            barBodySprite = PIXI.Sprite.from(r.barBody);
-            barBodySprite.anchor.set(0.5)
-            barBodySprite.scale = { x: 1.2, y: 0.6 }
+        barLeftSprite = PIXI.Sprite.from(r.barBlock);
+        barLeftSprite.anchor.set(0.5)
 
-            barLeftSprite = PIXI.Sprite.from(r.barBlock);
-            barLeftSprite.anchor.set(0.5)
+        barRightSprite = PIXI.Sprite.from(r.barBlock);
+        barRightSprite.anchor.set(0.5)
 
-            barRightSprite = PIXI.Sprite.from(r.barBlock);
-            barRightSprite.anchor.set(0.5)
+        const barContainer = new PIXI.Container();
+        barContainer.addChild(barBodySprite);
+        barContainer.addChild(barLeftSprite);
+        barContainer.addChild(barRightSprite);
+        barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
+        barContainer.zIndex = 999
 
-            const barContainer = new PIXI.Container();
-            barContainer.addChild(barBodySprite);
-            barContainer.addChild(barLeftSprite);
-            barContainer.addChild(barRightSprite);
-            barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
-            barContainer.zIndex = 999
-
-            update()
-            $pixiApplication.stage.addChild(barContainer);
-        })
+        update()
+        $pixiApplication.stage.addChild(barContainer);
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);

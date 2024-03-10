@@ -6,26 +6,29 @@ import { lives, reset, level } from './stores';
 
 export const engine: any = writable();
 export const world: any = writable();
+export const runner: any = writable();
 
 export function Engine() {
     const matterEngine = Matter.Engine.create();
     const matterWorld = matterEngine.world;
+    const matterRunner = Matter.Runner.create();
 
-    const render = Matter.Render.create({
-        element: document.body,
-        engine: matterEngine,
-        options: {
-            width: GAME_WIDTH,
-            height: GAME_HEIGHT,
-            pixelRatio: DEVICE_RATIO,
-            background: BACKGROUND_COLOR,
-            wireframes: false
-        }
-    });
-
-    Matter.Render.run(render)
-    const runner = Matter.Runner.create();
-    Matter.Runner.run(runner, matterEngine)
+    //ENGINE RENDERED WIREFRAME FOR DEBUGGING/TESTING
+    // const render = Matter.Render.create({
+    //     element: document.body,
+    //     engine: matterEngine,
+    //     options: {
+    //         width: GAME_WIDTH,
+    //         height: GAME_HEIGHT,
+    //         pixelRatio: DEVICE_RATIO,
+    //         background: BACKGROUND_COLOR,
+    //         wireframes: false
+    //     }
+    // });
+    //
+    // Matter.Render.run(render)
+ 
+    Matter.Runner.run(matterRunner, matterEngine)
 
     Matter.Events.on(matterEngine, 'collisionStart', (event) => {
         for(const pair of event.pairs) {
@@ -44,4 +47,5 @@ export function Engine() {
 
     engine.set(matterEngine)
     world.set(matterWorld)
+    runner.set(matterRunner)
 }

@@ -50,6 +50,7 @@ declare module '$env/static/private' {
 	export const npm_config_engine_strict: string;
 	export const COLORTERM: string;
 	export const WSL_DISTRO_NAME: string;
+	export const npm_package_devDependencies_tailwindcss: string;
 	export const npm_package_devDependencies_typescript: string;
 	export const npm_package_dependencies_matter_js: string;
 	export const npm_package_scripts_dev: string;
@@ -61,6 +62,7 @@ declare module '$env/static/private' {
 	export const _: string;
 	export const npm_package_private: string;
 	export const npm_package_scripts_check_watch: string;
+	export const npm_package_devDependencies_autoprefixer: string;
 	export const npm_package_scripts_lint: string;
 	export const npm_package_devDependencies__typescript_eslint_eslint_plugin: string;
 	export const npm_config_registry: string;
@@ -91,6 +93,7 @@ declare module '$env/static/private' {
 	export const XDG_DATA_DIRS: string;
 	export const npm_package_dependencies__pixi_filter_drop_shadow: string;
 	export const npm_package_devDependencies__sveltejs_adapter_auto: string;
+	export const npm_package_devDependencies_postcss: string;
 	export const npm_package_dependencies_pixi_js: string;
 	export const npm_command: string;
 	export const PNPM_SCRIPT_SRC_DIR: string;
@@ -156,6 +159,7 @@ declare module '$env/dynamic/private' {
 		npm_config_engine_strict: string;
 		COLORTERM: string;
 		WSL_DISTRO_NAME: string;
+		npm_package_devDependencies_tailwindcss: string;
 		npm_package_devDependencies_typescript: string;
 		npm_package_dependencies_matter_js: string;
 		npm_package_scripts_dev: string;
@@ -167,6 +171,7 @@ declare module '$env/dynamic/private' {
 		_: string;
 		npm_package_private: string;
 		npm_package_scripts_check_watch: string;
+		npm_package_devDependencies_autoprefixer: string;
 		npm_package_scripts_lint: string;
 		npm_package_devDependencies__typescript_eslint_eslint_plugin: string;
 		npm_config_registry: string;
@@ -197,6 +202,7 @@ declare module '$env/dynamic/private' {
 		XDG_DATA_DIRS: string;
 		npm_package_dependencies__pixi_filter_drop_shadow: string;
 		npm_package_devDependencies__sveltejs_adapter_auto: string;
+		npm_package_devDependencies_postcss: string;
 		npm_package_dependencies_pixi_js: string;
 		npm_command: string;
 		PNPM_SCRIPT_SRC_DIR: string;

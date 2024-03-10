@@ -1,9 +1,11 @@
 import * as PIXI from 'pixi.js';
-import { writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 import { DEVICE_RATIO } from '$lib/utils/utils';
-import { GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
+import { ASSETS_DATA, GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
 
 export const pixiApplication: any = writable()
+export const loadedAssets: any = writable([]);
+export const loaded = writable(false);
 
 export function App() {
 
@@ -18,6 +20,13 @@ export function App() {
     })
 
     globalThis.__PIXI_APP__ = app;
+
+    ASSETS_DATA.forEach((asset) => PIXI.Assets.add({ alias: asset.alias, src: asset.src }));
+    const assetTextures = PIXI.Assets.load(ASSETS_DATA.map((asset) => asset.alias))
+    assetTextures.then((r) => {
+        loadedAssets.set(r);
+        loaded.set(true);
+    });
 
     // to prevent that you can't scroll the page with touch on the canvas. https://github.com/pixijs/pixijs/issues/4824
     app.renderer.events.autoPreventDefault = false;
