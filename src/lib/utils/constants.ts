@@ -37,13 +37,14 @@ export const DEFAULT_KEY_RIGHT_UP = 'o'
 export const DEFAULT_KEY_RIGHT_DOWN = 'l'
 
 export const TWEEN_DURATION = 5
+export const MOVE_AMOUNT = 3
 
 export const BAR_STARTING_Y = GAME_HEIGHT - 100
 export const BAR_MAX_SKEW = 200
-export const BAR_WIDTH = GAME_WIDTH * 0.95
-export const BAR_WIDTH_PIXI = BAR_WIDTH / 376
+export const BAR_WIDTH = GAME_WIDTH * 0.98
+export const BAR_WIDTH_PIXI = BAR_WIDTH / 326
 export const BAR_HEIGHT = 8
-export const BLOCK_OFFSET = isMobile ? 3 : 28
+export const BLOCK_OFFSET = 13
 export const BAR_COLOR = '#BFBCB3'
 export const BAR_STROKE_COLOR = '#464542'
 export const BAR_LINE_WIDTH = 3

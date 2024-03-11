@@ -8,11 +8,13 @@
 
     import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI } from '$lib/utils/constants';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI, MOVE_AMOUNT } from '$lib/utils/constants';
     import { reset, lives, win, leftUpKey, leftDownKey, rightUpKey, rightDownKey, difficulty } from '$lib/utils/stores';
     import { getIsMobile } from '$lib/utils/utils';
 
     const isMobile = getIsMobile();
+
+    let movementAmountModifier = 1
 
     const leftY = tweened(BAR_STARTING_Y, {
         duration: () => ($reset || $win ? 500 : TWEEN_DURATION),
@@ -67,7 +69,7 @@
         if($rightY - $leftY > BAR_MAX_SKEW || $leftY < 20 || $reset || $win || $lives < 1) {
             return
         }
-        leftY.set($leftY - 3);
+        leftY.set($leftY - (MOVE_AMOUNT * movementAmountModifier)); 
         if (increaseLeftTimeoutId !== undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
         }
@@ -77,7 +79,7 @@
         if($leftY - $rightY > BAR_MAX_SKEW || $leftY > GAME_HEIGHT - 80 || $reset || $win || $lives < 1) {
             return
         }
-        leftY.set($leftY + 3);
+        leftY.set($leftY + (MOVE_AMOUNT * movementAmountModifier)); 
         if (decreaseLeftTimeoutId !== undefined) {
             decreaseLeftTimeoutId = setTimeout(decreaseLeftY, 0);
         }
@@ -87,7 +89,7 @@
         if($leftY - $rightY > BAR_MAX_SKEW || $rightY < 20 || $reset || $win || $lives < 1) {
             return
         }
-        rightY.set($rightY - 3);
+        rightY.set($rightY - (MOVE_AMOUNT * movementAmountModifier)); 
         if (increaseRightTimeoutId !== undefined) {
             increaseRightTimeoutId = setTimeout(increaseRightY, 0);
         }
@@ -97,13 +99,14 @@
         if($rightY - $leftY > BAR_MAX_SKEW || $rightY > GAME_HEIGHT - 80 || $reset || $win || $lives < 1) {
             return
         }
-        rightY.set($rightY + 3);
+        rightY.set($rightY + (MOVE_AMOUNT * movementAmountModifier));
         if (decreaseRightTimeoutId !== undefined) {
             decreaseRightTimeoutId = setTimeout(decreaseRightY, 0);
         }
     };
 
     const keyDownHandler = async (event: KeyboardEvent) => {
+        movementAmountModifier = 0.5
         if (event.key === $leftUpKey && increaseLeftTimeoutId === undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
             await increaseLeftY();
@@ -142,6 +145,7 @@
     };
 
     const touchDownHandler = async (key: string) => {
+        movementAmountModifier = 0.6
         if(key === 'leftUp' && increaseLeftTimeoutId === undefined) {
             increaseLeftTimeoutId = setTimeout(increaseLeftY, 0);
             await increaseLeftY();
@@ -262,6 +266,11 @@
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
+        // window.addEventListener('touchstart', (event) => { event.preventDefault(); }, { passive: false });
+        window.addEventListener('touchmove', (event) => { event.preventDefault(); }, { passive: false });
+        // window.addEventListener('touchend', (event) => { event.preventDefault(); }, { passive: false });
+        window.addEventListener('dragstart', (event) => { event.preventDefault(); }, { passive: false });
+        window.addEventListener('drag', (event) => { event.preventDefault(); }, { passive: false });
 
         const updateLoop = setInterval(update, 1000 / 60)
 
@@ -285,14 +294,58 @@
 </script>
 
 {#if isMobile}
-    <div class="absolute flex flex-row p-4 gap-2 w-screen bottom-8">
-        <div class="flex flex-col w-full h-full gap-2">
-            <div class="w-full h-16 bg-white z-40 left-0 bottom-28 opacity-[3%] rounded-md" on:touchstart={() => touchDownHandler('leftUp')} on:touchend={() => touchUpHandler('leftUp')} />
-            <div class="w-full h-16 bg-white z-40 left-0 bottom-44 opacity-[3%] rounded-md" on:touchstart={() => touchDownHandler('leftDown')} on:touchend={() => touchUpHandler('leftDown')} />
+    <div class="absolute flex flex-row p-4 w-screen bottom-8 justify-between">
+        <div class="flex flex-col h-full gap-2">
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+                on:touchstart={() => touchDownHandler('leftUp')}
+                on:dragenter={() => touchDownHandler('leftUp')}
+                on:touchend={() => touchUpHandler('leftUp')}
+                on:dragleave={() => touchUpHandler('leftUp')}
+            >
+                <div class="w-0 h-0 
+                border-l-[15px] border-l-transparent
+                border-b-[25px] border-b-black/50
+                border-r-[15px] border-r-transparent">
+                </div>
+            </div>
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+                on:touchstart={() => touchDownHandler('leftDown')}
+                on:dragenter={() => touchDownHandler('leftDown')}
+                on:touchend={() => touchUpHandler('leftDown')}
+                on:dragleave={() => touchUpHandler('leftDown')}
+            >
+                <div class="w-0 h-0 
+                border-l-[15px] border-l-transparent
+                border-t-[25px] border-t-black/50
+                border-r-[15px] border-r-transparent">
+                </div>
+            </div>
         </div>
-        <div class="flex flex-col w-full h-full gap-2">
-            <div class="w-full h-16 bg-white z-40 right-0 bottom-28 opacity-[3%] rounded-md" on:touchstart={() => touchDownHandler('rightUp')} on:touchend={() => touchUpHandler('rightUp')} />
-            <div class="w-full h-16 bg-white z-40 right-0 bottom-44 opacity-[3%] rounded-md" on:touchstart={() => touchDownHandler('rightDown')} on:touchend={() => touchUpHandler('rightDown')} />
+        <div class="flex flex-col h-full gap-2">
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+                on:touchstart={() => touchDownHandler('rightUp')}
+                on:dragenter={() => touchDownHandler('rightUp')}
+                on:touchend={() => touchUpHandler('rightUp')}
+                on:dragleave={() => touchUpHandler('rightUp')}
+            >
+                <div class="w-0 h-0 
+                border-l-[15px] border-l-transparent
+                border-b-[25px] border-b-black/50
+                border-r-[15px] border-r-transparent">
+                </div>
+            </div>
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+                on:touchstart={() => touchDownHandler('rightDown')}
+                on:dragenter={() => touchDownHandler('rightDown')}
+                on:touchend={() => touchUpHandler('rightDown')}
+                on:dragleave={() => touchUpHandler('rightDown')}
+            >
+                <div class="w-0 h-0 
+                border-l-[15px] border-l-transparent
+                border-t-[25px] border-t-black/50
+                border-r-[15px] border-r-transparent">
+                </div>
+            </div>
         </div>
     </div>
 {/if}
