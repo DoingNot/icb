@@ -78,7 +78,7 @@
 {#if $loaded}
     <div class="absolute w-screen h-screen flex justify-center items-center z-50">
         <div class={`w-[${GAME_WIDTH}px] h-${GAME_HEIGHT}px justify-center flex items-center`}>
-            <div class="bottom-10 flex absolute flex-col gap-1 justify-center items-center">
+            <div class="bottom-10 flex absolute flex-col gap-1 justify-center items-center select-none">
                 <h1 class="h1 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => showOptions = true}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
                 <div class="flex flex-row gap-1">
                     {#each Array.from({ length: $lives }, (_, i) => i + 1) as _life}
