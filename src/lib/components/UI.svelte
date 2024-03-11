@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col justify-center bg-[#1b1b1c] rounded-xl p-4 md:p-8 align-center w-3/4 md:w-[500px] gap-4 z-50" transition:blur={{ delay: 20, duration: 150 }}>
-                        <h1 class="h1 font-bold text-2xl text-slate-200 text-center">Options</h1>
+                        <h1 class="h1 font-bold text-2xl text-slate-200 text-center">Controls</h1>
                         <div class="flex flex-col sm:flex-row gap-2">
                             <button class="bg-[#2c2c2e]" type="button" on:click={() => {leftUpKey.set(''); leftUpInput=''}}>
                                 <div class="flex flex-col h-full justify-center">

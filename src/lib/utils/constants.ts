@@ -12,7 +12,7 @@ const mobileRatio = isMobile ? 0.75 : 0.9
 
 export const GAME_WIDTH = width
 export const GAME_HEIGHT = height
-export const MIN_HOLE_POSITION_X = isMobile ? 30 : 70
+export const MIN_HOLE_POSITION_X = isMobile ? 30 : 40
 export const MAX_HOLE_POSITION_X = GAME_WIDTH - MIN_HOLE_POSITION_X
 export const MAX_HOLE_POSITION_Y = GAME_HEIGHT - 220
 export const MIN_HOLE_POSITION_Y = 80
@@ -20,14 +20,10 @@ export const MIN_LOSE_HOLE_SIZE = 24 * mobileRatio
 export const MAX_LOSE_HOLE_SIZE = 32 * mobileRatio
 export const WIN_HOLES_COUNT = 10
 
-export const EASY_HOLES_COUNT = 15
-export const NORMAL_HOLES_COUNT = 25
-export const HARD_HOLES_COUNT = 40
-export const EXTREME_HOLES_COUNT = 60
-
-const maxInRow = Math.floor((GAME_WIDTH * 0.7) / (MAX_LOSE_HOLE_SIZE * 2))
-const maxInCol = Math.floor((GAME_HEIGHT * 0.7) / (MAX_LOSE_HOLE_SIZE * 2))
-export const MAX_LOSE_HOLES = maxInRow * maxInCol
+export const EASY_HOLES_COUNT = 30
+export const NORMAL_HOLES_COUNT = 50
+export const HARD_HOLES_COUNT = 70
+export const EXTREME_HOLES_COUNT = 90
 
 export const BACKGROUND_COLOR = '#D19E11'
 

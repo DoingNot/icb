@@ -1,5 +1,5 @@
 import type { GameLevel, LoseHoleConfig, WinHoleConfig } from "./types";
-import { MIN_HOLE_POSITION_Y, MIN_HOLE_POSITION_X, MAX_HOLE_POSITION_X, MAX_HOLE_POSITION_Y, WIN_HOLES_COUNT, MAX_LOSE_HOLE_SIZE, MIN_LOSE_HOLE_SIZE, MAX_LOSE_HOLES } from "./constants";
+import { MIN_HOLE_POSITION_Y, MIN_HOLE_POSITION_X, MAX_HOLE_POSITION_X, MAX_HOLE_POSITION_Y, WIN_HOLES_COUNT, MAX_LOSE_HOLE_SIZE, MIN_LOSE_HOLE_SIZE } from "./constants";
 
 function getRandomPosition(
     existingHoles: (LoseHoleConfig | WinHoleConfig)[],
@@ -65,9 +65,8 @@ function generateWinHoles(): WinHoleConfig[] {
 function generateLoseHoles(winHoles: WinHoleConfig[], numHoles: number): LoseHoleConfig[] {
     const loseHoles: LoseHoleConfig[] = [];
     const allHoles: (LoseHoleConfig | WinHoleConfig)[] = [...winHoles]
-    const maxNumHoles = Math.min(numHoles, MAX_LOSE_HOLES)
 
-    for (let index = 0; index < maxNumHoles; index++) {
+    for (let index = 0; index < numHoles; index++) {
         const size = Math.floor(Math.random() * (MAX_LOSE_HOLE_SIZE - MIN_LOSE_HOLE_SIZE + 1) + MIN_LOSE_HOLE_SIZE);
         const { x, y, end } = getRandomPosition(allHoles, size);
         if(end) break;
