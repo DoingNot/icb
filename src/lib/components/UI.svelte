@@ -93,7 +93,7 @@
                 <div class="absolute w-full h-screen bg-gray-950/50 backdrop-blur-sm z-40" transition:blur={{ delay: 100, duration: 450 }}/>
                 <div class="flex flex-col justify-between absolute bg-[#1b1b1c] rounded-xl p-8 align-center w-[280px] h-[180px] z-50" transition:blur={{ delay: 200, duration: 450 }}>
                     <h1 class="h1 font-bold text-2xl text-slate-200 text-center">Game Over</h1>
-                    <button class="bg-[#2c2c2e]" type="button" on:click={restartGame}>Restart</button>
+                    <button class="w-full bg-[#2c2c2e]" type="button" on:click={restartGame}>Restart</button>
                 </div>
             {/if}
 

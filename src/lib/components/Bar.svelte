@@ -246,13 +246,15 @@
 
         barBodySprite = PIXI.Sprite.from(r.barBody);
         barBodySprite.anchor.set(0.5);
-        barBodySprite.scale = { x: BAR_WIDTH_PIXI, y: 0.6 };
+        barBodySprite.scale = { x: BAR_WIDTH_PIXI / 4, y: 0.6 / 4 };
 
         barLeftSprite = PIXI.Sprite.from(r.barBlock);
         barLeftSprite.anchor.set(0.5);
+        barLeftSprite.scale = { x : 0.25, y: 0.25 }
 
         barRightSprite = PIXI.Sprite.from(r.barBlock);
         barRightSprite.anchor.set(0.5)
+        barRightSprite.scale = { x : 0.25, y: 0.25 }
 
         const barContainer = new PIXI.Container();
         barContainer.addChild(barBodySprite);

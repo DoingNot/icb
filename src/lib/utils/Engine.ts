@@ -8,7 +8,11 @@ export const world: any = writable();
 export const runner: any = writable();
 
 export function Engine() {
-    const matterEngine = Matter.Engine.create();
+    const matterEngine = Matter.Engine.create({
+        gravity: {
+            scale: 0.004
+        }
+    });
     const matterWorld = matterEngine.world;
     const matterRunner = Matter.Runner.create();
 

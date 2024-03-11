@@ -37,7 +37,7 @@ export const DEFAULT_KEY_RIGHT_UP = 'o'
 export const DEFAULT_KEY_RIGHT_DOWN = 'l'
 
 export const TWEEN_DURATION = 5
-export const MOVE_AMOUNT = 3
+export const MOVE_AMOUNT = 5
 
 export const BAR_STARTING_Y = GAME_HEIGHT - 100
 export const BAR_MAX_SKEW = 200
@@ -57,7 +57,7 @@ export const BAR_DROPSHADOW_OPTIONS = {
 }
 
 export const BALL_SIZE = 18 * mobileRatio
-export const BALL_SIZE_PIXI = BALL_SIZE / 26
+export const BALL_SIZE_PIXI = BALL_SIZE / 104
 export const BALL_STARTING_X = GAME_WIDTH / 2
 export const BALL_STARTING_Y = GAME_HEIGHT - 180
 export const BALL_COLOR = '#BFBCB3'
