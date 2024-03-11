@@ -1,38 +1,15 @@
-# create-svelte
+# Ice Cold Beer
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A recreation of the mechanical arcade game Ice Cold Beer released by Taito in 1983.
 
-## Creating a project
+Built with Svelte + TailwindCSS for UI, PixiJS for rendering and Matter.js for phsyics.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Gameplay
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Move the sides of the bar up and down to control the ball and get it into the lit up green holes while avoiding other losing holes. <br>
+Each successful win hole will level up the game and light up the next win hole. Get to the 10th win hole before losing all 3 lives to win.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+Select Difficulty from Easy, Normal, Hard and Extreme which will generate a new game board with increasing number of lose holes. <br>
+Configure keybinds for controls in the options page.
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+<i>Currently no mobile mode :(</i>
