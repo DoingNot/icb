@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 body {
-	@apply w-screen h-screen flex flex-row bg-[#1e1e1f] justify-center items-center p-16;
+	@apply w-screen h-screen flex bg-[#1e1e1f] justify-center items-center;
 }
 
 canvas {
-  @apply rounded-xl
+  @apply rounded-xl absolute top-2 md:relative -z-40
 }
 
 button {
-  @apply p-4 font-semibold text-yellow-500 rounded-md border-2 border-transparent hover:bg-[#3c3c3e] active:border-2 active:border-slate-600
+  @apply w-full sm:w-32 p-2 md:p-4 text-sm md:text-lg font-semibold text-yellow-500 rounded-md border-2 border-transparent hover:bg-[#3c3c3e] active:border-2 active:border-slate-600
 }

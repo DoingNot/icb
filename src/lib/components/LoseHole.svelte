@@ -42,7 +42,7 @@
     const loseHoleSprite = PIXI.Sprite.from(r)
     loseHoleSprite.anchor.set(0.5)
     loseHoleSprite.position.set(x, y)
-    loseHoleSprite.scale = { x: size/40, y: size/40 }
+    loseHoleSprite.scale = { x: size/160, y: size/160 }
 
     $holesContainer.addChild(loseHoleSprite)
 

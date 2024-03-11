@@ -76,10 +76,9 @@
 </script>
 
 {#if $loaded}
-    <div class="absolute w-screen h-screen flex justify-center items-center z-50">
-        <div class={`w-[${GAME_WIDTH}px] h-${GAME_HEIGHT}px justify-center flex items-center`}>
-            <div class="bottom-10 flex absolute flex-col gap-1 justify-center items-center select-none">
-                <h1 class="h1 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => showOptions = true}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
+    <div class="absolute w-full h-screen flex justify-center items-center overflow-hidden">
+            <div class="top-[86%] sm:bottom-12 flex absolute flex-row sm:flex-col gap-2 sm:gap-1 justify-center items-center select-none">
+                <h1 class="h1 text-sm sm:text-md text-slate-50 md:text-gray-900 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => showOptions = true}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
                 <div class="flex flex-row gap-1">
                     {#each Array.from({ length: $lives }, (_, i) => i + 1) as _life}
                         <img src={heart} alt=''/>
@@ -91,29 +90,29 @@
             </div>
 
             {#if showRestartScreen}
-                <div class="absolute w-screen h-screen bg-gray-950/50 backdrop-blur-sm z-40" transition:blur={{ delay: 100, duration: 450 }}/>
+                <div class="absolute w-full h-screen bg-gray-950/50 backdrop-blur-sm z-40" transition:blur={{ delay: 100, duration: 450 }}/>
                 <div class="flex flex-col justify-between absolute bg-[#1b1b1c] rounded-xl p-8 align-center w-[280px] h-[180px] z-50" transition:blur={{ delay: 200, duration: 450 }}>
                     <h1 class="h1 font-bold text-2xl text-slate-200 text-center">Game Over</h1>
-                    <button class="bg-[#2c2c2e]" type="button" on:click={restartGame}>Restart</button>
+                    <button class="w-full bg-[#2c2c2e]" type="button" on:click={restartGame}>Restart</button>
                 </div>
             {/if}
 
             {#if showOptions}
-                <div class="absolute w-screen h-screen bg-gray-950/50 backdrop-blur-sm z-40" on:click={() => showOptions = false} transition:blur={{ delay: 20, duration: 250 }}/>
-                <div class="flex flex-col absolute w-screen-hscreen gap-4">
-                    <div class="flex flex-col justify-between bg-[#1b1b1c] rounded-xl p-8 align-center w-[500px] h-[180px] z-50" transition:blur={{ delay: 20, duration: 150 }}>
+                <div class="absolute w-full h-screen bg-gray-950/50 backdrop-blur-sm z-40 overflow-hidden" on:click={() => showOptions = false} transition:blur={{ delay: 20, duration: 250 }}/>
+                <div class="flex flex-col absolute w-full h-full gap-4 overflow-hidden justify-center items-center">
+                    <div class="flex flex-col justify-center gap-4 bg-[#1b1b1c] rounded-xl p-4 md:p-8 align-center w-3/4 md:w-[500px] z-50" transition:blur={{ delay: 20, duration: 150 }}>
                         <h1 class="h1 font-bold text-2xl text-slate-200 text-center">{$gameWon ? 'You Won! Play Again?' : 'Difficulty'}</h1>
-                        <div class="flex flex-row gap-2">
-                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Easy', EASY_HOLES_COUNT)}>Easy</button>
-                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Normal', NORMAL_HOLES_COUNT)}>Normal</button>
-                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Hard', HARD_HOLES_COUNT)}>Hard</button>
-                            <button class="bg-[#2c2c2e] w-32" type="button" on:click={() => setDifficulty('Extreme', EXTREME_HOLES_COUNT)}>Extreme</button>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => setDifficulty('Easy', EASY_HOLES_COUNT)}>Easy</button>
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => setDifficulty('Normal', NORMAL_HOLES_COUNT)}>Normal</button>
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => setDifficulty('Hard', HARD_HOLES_COUNT)}>Hard</button>
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => setDifficulty('Extreme', EXTREME_HOLES_COUNT)}>Extreme</button>
                         </div>
                     </div>
-                    <div class="flex flex-col justify-between bg-[#1b1b1c] rounded-xl p-8 align-center w-[500px] h-[180px] gap-4 z-50" transition:blur={{ delay: 20, duration: 150 }}>
+                    <div class="flex flex-col justify-center bg-[#1b1b1c] rounded-xl p-4 md:p-8 align-center w-3/4 md:w-[500px] gap-4 z-50" transition:blur={{ delay: 20, duration: 150 }}>
                         <h1 class="h1 font-bold text-2xl text-slate-200 text-center">Options</h1>
-                        <div class="flex flex-row gap-2">
-                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {leftUpKey.set(''); leftUpInput=''}}>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => {leftUpKey.set(''); leftUpInput=''}}>
                                 <div class="flex flex-col h-full justify-center">
                                     <p class="text-xs text-slate-300">Left Up</p>
                                     {#if $leftUpKey}
@@ -123,7 +122,7 @@
                                     {/if}
                                 </div>
                             </button>
-                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {leftDownKey.set(''); leftDownInput=''}}>
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => {leftDownKey.set(''); leftDownInput=''}}>
                                 <div class="flex flex-col h-full justify-center">
                                     <p class="text-xs text-slate-300">Left Down</p>
                                     {#if $leftDownKey}
@@ -133,7 +132,7 @@
                                     {/if}
                                 </div>
                             </button>
-                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {rightUpKey.set(''); rightUpInput=''}}>
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => {rightUpKey.set(''); rightUpInput=''}}>
                                 <div class="flex flex-col h-full justify-center">
                                     <p class="text-xs text-slate-300">Right Up</p>
                                     {#if $rightUpKey}
@@ -143,7 +142,7 @@
                                     {/if}
                                 </div>
                             </button>
-                            <button class="bg-[#2c2c2e] w-32 h-16" type="button" on:click={() => {rightDownKey.set(''); rightDownInput=''}}>
+                            <button class="bg-[#2c2c2e]" type="button" on:click={() => {rightDownKey.set(''); rightDownInput=''}}>
                                 <div class="flex flex-col h-full justify-center">
                                     <p class="text-xs text-slate-300">Right Down</p>
                                     {#if $rightDownKey}
@@ -157,7 +156,6 @@
                     </div>
                 </div>
             {/if}
-        </div>
     </div>
 {/if}
 

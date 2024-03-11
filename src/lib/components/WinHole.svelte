@@ -42,6 +42,7 @@
     const r = $loadedAssets.winHole
     const winHoleSprite = PIXI.Sprite.from(r)
     winHoleSprite.anchor.set(0.5)
+    winHoleSprite.scale = { x: 0.25, y: 0.25 }
 
     $: winHoleSprite.texture = $level != winLevel ? $loadedAssets.winHoleInactive : r
 

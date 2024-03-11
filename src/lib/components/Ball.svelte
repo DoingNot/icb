@@ -49,8 +49,8 @@
             BALL_SIZE,
             {
                 label: 'Ball',
-                friction: 0.505,
-                frictionStatic: 0.52,
+                friction: 0.50,
+                frictionStatic: 0.7,
                 frictionAir: 0,
                 render: {
                     fillStyle: BALL_COLOR,
@@ -59,7 +59,7 @@
                 }
             }
         );
-        Matter.Body.setMass(matterBall, 1000)
+        Matter.Body.setMass(matterBall, 0.0001)
         Matter.Composite.add($world, matterBall)
 
         const r =$loadedAssets['ball']
@@ -104,7 +104,7 @@
         tweenAngleDuration = 400
         tweenedAngle.set(matterBall.angle + 500)
 
-        tweenedScale.set(0.3)
+        tweenedScale.set(BALL_SIZE_PIXI / 2)
         tweenedAlpha.set(0)
 
         Matter.Body.setStatic(matterBall, true)
