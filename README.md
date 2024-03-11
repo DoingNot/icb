@@ -2,6 +2,8 @@
 
 [Play the game here](https://icb.joshsur.in/)
 
+![image](https://github.com/DoingNot/icb/assets/15971548/f1201bb8-df10-4c3f-8d3f-0f54a3ee6885)
+
 A recreation of the mechanical arcade game Ice Cold Beer released by Taito in 1983.
 
 Built with Svelte + TailwindCSS for UI, PixiJS for rendering and Matter.js for phsyics.
