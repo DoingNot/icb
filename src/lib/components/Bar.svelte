@@ -8,7 +8,7 @@
 
     import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW } from '$lib/utils/constants';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI } from '$lib/utils/constants';
     import { reset, lives, win, leftUpKey, leftDownKey, rightUpKey, rightDownKey, difficulty } from '$lib/utils/stores';
 
     const leftY = tweened(BAR_STARTING_Y, {
@@ -22,11 +22,11 @@
     $: barY = (($leftY + $rightY) / 2);
     const barX = GAME_WIDTH / 2;
 
-    const barLeftX = barX - BAR_WIDTH / 2 + BLOCK_OFFSET;
-    $: barLeftY = $leftY - BLOCK_OFFSET / 8 + ($rightY - $leftY) / 20 - 22
+    const barLeftX = BLOCK_OFFSET;
+    $: barLeftY = $leftY - ($rightY - $leftY) / 95 - 23
 
-    const barRightX = barX + BAR_WIDTH / 2 - BLOCK_OFFSET;
-    $: barRightY = $rightY - BLOCK_OFFSET / 8 - ($rightY - $leftY) / 20 - 22;
+    const barRightX = GAME_WIDTH - BLOCK_OFFSET;
+    $: barRightY = $rightY - ($rightY - $leftY) / 95 - 23;
 
     let increaseLeftTimeoutId: number | undefined = undefined;
     let decreaseLeftTimeoutId: number | undefined = undefined;
@@ -168,7 +168,7 @@
             barLeftX,
             barLeftY,
             BAR_WIDTH / 40,
-            BAR_HEIGHT * 5,
+            BAR_HEIGHT * 10,
             {
                 isStatic: true,
                 label: 'BarLeft',
@@ -183,7 +183,7 @@
             barRightX,
             barRightY,
             BAR_WIDTH / 40,
-            BAR_HEIGHT * 5,
+            BAR_HEIGHT * 10,
             {
                 isStatic: true,
                 label: 'BarLeft',
@@ -201,7 +201,7 @@
 
         barBodySprite = PIXI.Sprite.from(r.barBody);
         barBodySprite.anchor.set(0.5)
-        barBodySprite.scale = { x: 1.8, y: 0.6 }
+        barBodySprite.scale = { x: BAR_WIDTH_PIXI, y: 0.6 }
 
         barLeftSprite = PIXI.Sprite.from(r.barBlock);
         barLeftSprite.anchor.set(0.5)

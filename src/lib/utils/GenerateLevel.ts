@@ -43,7 +43,7 @@ function generateWinHoles(): WinHoleConfig[] {
     const winHoles: WinHoleConfig[] = [];
 
     for(let level = 1; level<= WIN_HOLES_COUNT; level++) {
-        const size = 28 - (level - 1);
+        const size = Math.floor(MAX_LOSE_HOLE_SIZE * 0.9) - (level - 1);
         const { x, y } = getRandomPosition(winHoles, size, level);
 
         winHoles.push({ x, y, size, winLevel: level})
