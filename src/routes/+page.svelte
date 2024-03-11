@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>ICB</title>
+	<title>Ice Cold Beer</title>
 	<meta name="description" content="Recreation of Ice Cold Beer Arcade Game" />
 </svelte:head>
 
