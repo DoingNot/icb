@@ -6,7 +6,7 @@ Built with Svelte + TailwindCSS for UI, PixiJS for rendering and Matter.js for p
 
 ## Gameplay
 
-Move the sides of the bar up and down to control the ball and get it into the lit up green holes while avoiding other losing holes. <br>
+Move the sides of the bar up and down to control the ball and get it into the lit up green holes while avoiding other losing holes.
 Each successful win hole will level up the game and light up the next win hole. Get to the 10th win hole before losing all 3 lives to win.
 
 Select Difficulty from Easy, Normal, Hard and Extreme which will generate a new game board with increasing number of lose holes. <br>
