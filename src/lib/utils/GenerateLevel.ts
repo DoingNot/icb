@@ -1,14 +1,17 @@
 import type { GameLevel, LoseHoleConfig, WinHoleConfig } from "./types";
-import { MIN_HOLE_POSITION_Y, MIN_HOLE_POSITION_X, MAX_HOLE_POSITION_X, MAX_HOLE_POSITION_Y, WIN_HOLES_COUNT, MAX_LOSE_HOLE_SIZE, MIN_LOSE_HOLE_SIZE } from "./constants";
+import { MIN_HOLE_POSITION_Y, MIN_HOLE_POSITION_X, MAX_HOLE_POSITION_X, MAX_HOLE_POSITION_Y, WIN_HOLES_COUNT, MAX_LOSE_HOLE_SIZE, MIN_LOSE_HOLE_SIZE, MAX_LOSE_HOLES } from "./constants";
 
 function getRandomPosition(
     existingHoles: (LoseHoleConfig | WinHoleConfig)[],
     size: number,
     level?: number
-): { x: number; y: number } {
+): { x: number; y: number; end: boolean } {
     let x: number;
     let y: number;
+    let end = false;
     let overlaps;
+    let iterationCount = 0;
+    const maxIterations = 100;
 
     do {
         if(level) {
@@ -34,9 +37,16 @@ function getRandomPosition(
             }
             return false;
         })
+
+        iterationCount = iterationCount + 1
+
+        if (iterationCount > maxIterations) {
+            end = true;
+            break;
+        }
     } while (overlaps);
 
-    return { x, y };
+    return { x, y, end };
 }
 
 function generateWinHoles(): WinHoleConfig[] {
@@ -55,10 +65,12 @@ function generateWinHoles(): WinHoleConfig[] {
 function generateLoseHoles(winHoles: WinHoleConfig[], numHoles: number): LoseHoleConfig[] {
     const loseHoles: LoseHoleConfig[] = [];
     const allHoles: (LoseHoleConfig | WinHoleConfig)[] = [...winHoles]
+    const maxNumHoles = Math.min(numHoles, MAX_LOSE_HOLES)
 
-    for (let index = 0; index < numHoles; index++) {
+    for (let index = 0; index < maxNumHoles; index++) {
         const size = Math.floor(Math.random() * (MAX_LOSE_HOLE_SIZE - MIN_LOSE_HOLE_SIZE + 1) + MIN_LOSE_HOLE_SIZE);
-        const { x, y } = getRandomPosition(allHoles, size);
+        const { x, y, end } = getRandomPosition(allHoles, size);
+        if(end) break;
         const loseHole: LoseHoleConfig = { index, x, y, size };
         loseHoles.push(loseHole);
         allHoles.push(loseHole);

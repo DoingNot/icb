@@ -25,6 +25,10 @@ export const NORMAL_HOLES_COUNT = 25
 export const HARD_HOLES_COUNT = 40
 export const EXTREME_HOLES_COUNT = 60
 
+const maxInRow = Math.floor((GAME_WIDTH * 0.7) / (MAX_LOSE_HOLE_SIZE * 2))
+const maxInCol = Math.floor((GAME_HEIGHT * 0.7) / (MAX_LOSE_HOLE_SIZE * 2))
+export const MAX_LOSE_HOLES = maxInRow * maxInCol
+
 export const BACKGROUND_COLOR = '#D19E11'
 
 export const DEFAULT_KEY_LEFT_UP = 'w'
