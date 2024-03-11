@@ -16,4 +16,4 @@ Each successful win hole will level up the game and light up the next win hole. 
 Select Difficulty from Easy, Normal, Hard and Extreme which will generate a new game board with increasing number of lose holes. <br>
 Configure keybinds for controls in the options page.
 
-<i>Currently no mobile mode :(</i>
+Play on mobile with on screen touch controls.
