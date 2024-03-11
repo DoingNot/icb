@@ -12,7 +12,7 @@ const mobileRatio = isMobile ? 0.75 : 0.9
 
 export const GAME_WIDTH = width
 export const GAME_HEIGHT = height
-export const MIN_HOLE_POSITION_X = 70
+export const MIN_HOLE_POSITION_X = isMobile ? 30 : 70
 export const MAX_HOLE_POSITION_X = GAME_WIDTH - MIN_HOLE_POSITION_X
 export const MAX_HOLE_POSITION_Y = GAME_HEIGHT - 220
 export const MIN_HOLE_POSITION_Y = 80
@@ -43,7 +43,7 @@ export const BAR_MAX_SKEW = 200
 export const BAR_WIDTH = GAME_WIDTH * 0.95
 export const BAR_WIDTH_PIXI = BAR_WIDTH / 376
 export const BAR_HEIGHT = 8
-export const BLOCK_OFFSET = 28
+export const BLOCK_OFFSET = isMobile ? 3 : 28
 export const BAR_COLOR = '#BFBCB3'
 export const BAR_STROKE_COLOR = '#464542'
 export const BAR_LINE_WIDTH = 3
