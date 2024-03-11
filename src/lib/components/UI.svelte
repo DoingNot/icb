@@ -76,10 +76,10 @@
 </script>
 
 {#if $loaded}
-    <div class="absolute w-full h-full flex justify-center items-center z-50 overflow-hidden">
+    <div class="absolute w-full h-full flex justify-center items-center overflow-hidden">
         <div class={`w-[${GAME_WIDTH}px] h-${GAME_HEIGHT}px justify-center flex items-center`}>
-            <div class="bottom-16 flex absolute flex-col gap-1 justify-center items-center select-none">
-                <h1 class="h1 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => showOptions = true}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
+            <div class="bottom-4 sm:bottom-12 flex absolute flex-row sm:flex-col gap-2 sm:gap-1 justify-center items-center select-none">
+                <h1 class="h1 text-sm sm:text-md text-slate-300 md:text-gray-900 font-bold text-center cursor-default hover:cursor-pointer" on:click={() => showOptions = true}>Level: {$level} | Difficulty: {difficultyText ?? 'hi :)'}</h1>
                 <div class="flex flex-row gap-1">
                     {#each Array.from({ length: $lives }, (_, i) => i + 1) as _life}
                         <img src={heart} alt=''/>

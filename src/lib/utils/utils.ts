@@ -6,12 +6,12 @@ export function getIsMobile() {
 
 export function getGameDimensions(): {width: number; height: number} {
     const isMobile = getIsMobile()
-    const height = window.innerHeight * 0.9
+    const height = window.innerHeight * 0.95
 
     if(isMobile) {
         return {
             width: window.innerWidth * 0.95,
-            height: height,
+            height: window.innerHeight * 0.90,
         }
     }
 
