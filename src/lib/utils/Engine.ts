@@ -17,19 +17,19 @@ export function Engine() {
     const matterRunner = Matter.Runner.create();
 
     // ENGINE RENDERED WIREFRAME FOR DEBUGGING/TESTING
-    // const render = Matter.Render.create({
-    //     element: document.body,
-    //     engine: matterEngine,
-    //     options: {
-    //         width: GAME_WIDTH,
-    //         height: GAME_HEIGHT,
-    //         pixelRatio: DEVICE_RATIO,
-    //         background: BACKGROUND_COLOR,
-    //         wireframes: false
-    //     }
-    // });
-    //
-    // Matter.Render.run(render)
+    const render = Matter.Render.create({
+        element: document.body,
+        engine: matterEngine,
+        options: {
+            width: GAME_WIDTH,
+            height: GAME_HEIGHT,
+            pixelRatio: DEVICE_RATIO,
+            background: BACKGROUND_COLOR,
+            wireframes: false
+        }
+    });
+
+    Matter.Render.run(render)
  
     Matter.Runner.run(matterRunner, matterEngine)
 

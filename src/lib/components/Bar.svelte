@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Sprite } from 'pixi-svelte';
     import Matter from 'matter-js';
     import * as PIXI from 'pixi.js';
     import { DropShadowFilter } from '@pixi/filter-drop-shadow';
@@ -8,7 +9,7 @@
 
     import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI, MOVE_AMOUNT } from '$lib/utils/constants';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI, MOVE_AMOUNT, BAR_HEIGHT_PIXI } from '$lib/utils/constants';
     import { reset, lives, win, leftUpKey, leftDownKey, rightUpKey, rightDownKey, difficulty } from '$lib/utils/stores';
     import { getIsMobile } from '$lib/utils/utils';
 
@@ -38,31 +39,36 @@
     let increaseRightTimeoutId: number | undefined = undefined;
     let decreaseRightTimeoutId: number | undefined = undefined;
 
-    const update = () => {
-        Matter.Body.setPosition(barBody, {
-            x: barX,
-            y: barY
-        });
-        Matter.Body.setAngle(barBody, barRotation);
+    let barRotation = 0;
 
-        if(barBodySprite) {
-            barBodySprite?.position.set(barX, barY - 6)
-            barBodySprite.rotation = barRotation
+    $: {
+        barRotation = Math.atan2(BAR_WIDTH, $leftY - $rightY) - Math.PI/2;
+
+        if(barBody) {
+            Matter.Body.setPosition(barBody, {
+                x: barX,
+                y: barY
+            });
+            Matter.Body.setAngle(barBody, barRotation);
         }
 
-        Matter.Body.setPosition(barLeft, {
-            x: barLeftX,
-            y: barLeftY
-        })
+        if(barLeft) {
+            Matter.Body.setPosition(barLeft, {
+                x: barLeftX,
+                y: barLeftY
+            })
+        }
 
-        barLeftSprite?.position.set(barLeftX, barLeftY - 6)
+        // barLeftSprite?.position.set(barLeftX, barLeftY - 6)
 
-        Matter.Body.setPosition(barRight, {
-            x: barRightX,
-            y: barRightY
-        })
+        if(barRight) {
+            Matter.Body.setPosition(barRight, {
+                x: barRightX,
+                y: barRightY
+            })
+        }
 
-        barRightSprite?.position.set(barRightX, barRightY - 6)
+        // barRightSprite?.position.set(barRightX, barRightY - 6)
     }
 
     const increaseLeftY = async () => {
@@ -183,14 +189,11 @@
         }
     }
     
-    $: barRotation = Math.atan2(BAR_WIDTH, $leftY - $rightY) - Math.PI/2;
+    
 
     let barBody: Matter.Body;
     let barLeft: Matter.Body;
     let barRight: Matter.Body;
-    let barBodySprite: PIXI.Sprite
-    let barLeftSprite: PIXI.Sprite
-    let barRightSprite: PIXI.Sprite
 
     onMount(() => {
         barBody = Matter.Bodies.rectangle(
@@ -242,29 +245,25 @@
 
         Matter.World.add($world, [barLeft, barRight, barBody]);
 
-        const r = $loadedAssets
-
-        barBodySprite = PIXI.Sprite.from(r.barBody);
-        barBodySprite.anchor.set(0.5);
-        barBodySprite.scale = { x: BAR_WIDTH_PIXI / 4, y: 0.6 / 4 };
-
-        barLeftSprite = PIXI.Sprite.from(r.barBlock);
-        barLeftSprite.anchor.set(0.5);
-        barLeftSprite.scale = { x : 0.25, y: 0.25 }
-
-        barRightSprite = PIXI.Sprite.from(r.barBlock);
-        barRightSprite.anchor.set(0.5)
-        barRightSprite.scale = { x : 0.25, y: 0.25 }
-
-        const barContainer = new PIXI.Container();
-        barContainer.addChild(barBodySprite);
-        barContainer.addChild(barLeftSprite);
-        barContainer.addChild(barRightSprite);
-        barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
-        barContainer.zIndex = 999
-
-        update()
-        $pixiApplication.stage.addChild(barContainer);
+        // barBodySprite.scale = { x: BAR_WIDTH_PIXI / 4, y: 0.6 / 4 };
+        //
+        // barLeftSprite = PIXI.Sprite.from(r.barBlock);
+        // barLeftSprite.anchor.set(0.5);
+        // barLeftSprite.scale = { x : 0.25, y: 0.25 }
+        //
+        // barRightSprite = PIXI.Sprite.from(r.barBlock);
+        // barRightSprite.anchor.set(0.5)
+        // barRightSprite.scale = { x : 0.25, y: 0.25 }
+        //
+        // const barContainer = new PIXI.Container();
+        // barContainer.addChild(barBodySprite);
+        // barContainer.addChild(barLeftSprite);
+        // barContainer.addChild(barRightSprite);
+        // barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
+        // barContainer.zIndex = 999
+        //
+        // update()
+        // $pixiApplication.stage.addChild(barContainer);
 
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
@@ -274,8 +273,6 @@
         window.addEventListener('dragstart', (event) => { event.preventDefault(); }, { passive: false });
         window.addEventListener('drag', (event) => { event.preventDefault(); }, { passive: false });
 
-        const updateLoop = setInterval(update, 1000 / 60)
-
         return () => {
             window.removeEventListener('keydown', keyDownHandler);
             window.removeEventListener('keyup', keyUpHandler);
@@ -283,7 +280,6 @@
             clearTimeout(decreaseLeftTimeoutId);
             clearTimeout(increaseRightTimeoutId);
             clearTimeout(decreaseRightTimeoutId);
-            clearInterval(updateLoop)
         };
 
     });
@@ -294,6 +290,26 @@
     }
 
 </script>
+
+<Sprite 
+    key="bar"
+    x={barX}
+    y={barY + 38}
+    anchor={0.5}
+    width={BAR_WIDTH_PIXI}
+    height={BAR_HEIGHT_PIXI}
+    rotation={barRotation}
+/>
+<Sprite
+    key="barblock"
+    x={barLeftX}
+    y={barLeftY}
+/>
+<Sprite
+    key="barblock"
+    x={barRightX}
+    y={barRightY}
+/>
 
 {#if isMobile}
     <div class="absolute flex flex-row p-4 w-screen bottom-8 justify-between">

@@ -38,8 +38,9 @@ export const MOVE_AMOUNT = 5
 export const BAR_STARTING_Y = GAME_HEIGHT - 100
 export const BAR_MAX_SKEW = 200
 export const BAR_WIDTH = GAME_WIDTH * 0.98
-export const BAR_WIDTH_PIXI = BAR_WIDTH / 326
+export const BAR_WIDTH_PIXI = BAR_WIDTH
 export const BAR_HEIGHT = 8
+export const BAR_HEIGHT_PIXI = 20
 export const BLOCK_OFFSET = 13
 export const BAR_COLOR = '#BFBCB3'
 export const BAR_STROKE_COLOR = '#464542'
@@ -53,7 +54,7 @@ export const BAR_DROPSHADOW_OPTIONS = {
 }
 
 export const BALL_SIZE = 18 * mobileRatio
-export const BALL_SIZE_PIXI = BALL_SIZE / 104
+export const BALL_SIZE_PIXI = BALL_SIZE * 2.5
 export const BALL_STARTING_X = GAME_WIDTH / 2
 export const BALL_STARTING_Y = GAME_HEIGHT - 180
 export const BALL_COLOR = '#BFBCB3'

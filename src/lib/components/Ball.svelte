@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Sprite } from 'pixi-svelte';
     import Matter from 'matter-js'
     import * as PIXI from 'pixi.js';
     import { DropShadowFilter } from '@pixi/filter-drop-shadow'
@@ -7,12 +8,10 @@
     import { tweened } from 'svelte/motion';
     import { sineOut, quintIn } from 'svelte/easing';
 
-    import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from "$lib/utils/Engine";
     import { BALL_COLOR, BALL_STROKE_COLOR, BALL_LINE_WIDTH, BALL_DROPSHADOW_OPTIONS, BALL_STARTING_X, BALL_STARTING_Y, BALL_SIZE, BALL_SIZE_PIXI } from '$lib/utils/constants';
-    import { reset, lives, level, win } from '$lib/utils/stores';
+    import { reset, win } from '$lib/utils/stores';
 
-    let ball: PIXI.Sprite
     let matterBall: Matter.Body
     let tweenXDuration = 0
     let tweenYDuration = 0
@@ -61,38 +60,19 @@
         );
         Matter.Body.setMass(matterBall, 0.0001)
         Matter.Composite.add($world, matterBall)
-
-        const r =$loadedAssets['ball']
-        ball = PIXI.Sprite.from(r);
-        const ballContainer = new PIXI.Container();
-        ballContainer.addChild(ball)
-        ballContainer.filters = [new DropShadowFilter(BALL_DROPSHADOW_OPTIONS)];
-        $pixiApplication.stage.addChild(ballContainer)
-        ball.anchor.set(0.5)
-        ball.scale = { x: BALL_SIZE_PIXI, y: BALL_SIZE_PIXI }
-        ballContainer.zIndex = 999
-
-        const updateLoop = setInterval(update, 1000 / 60)
-
-        return () => {
-            clearInterval(updateLoop)
-        }
     });
 
-    const update = () => {
-        if(ball) {
-            if($reset || $win) {
-                Matter.Body.setPosition(matterBall, { x: $tweenedX, y: $tweenedY })
-            } else if (!$reset || !$win) {
-                tweenedX.set(matterBall.position.x)
-                tweenedY.set(matterBall.position.y)
-                tweenedAngle.set(matterBall.angle)
-            }
-            ball.position.set(matterBall.position.x, matterBall.position.y - 4)
-            ball.rotation = matterBall.angle
-            ball.scale.set($tweenedScale)
-            ball.alpha = $tweenedAlpha
+    $: {
+        if($reset || $win) {
+            Matter.Body.setPosition(matterBall, { x: $tweenedX, y: $tweenedY })
+        } else if (!$reset || !$win) {
+            tweenedX.set(matterBall?.position.x || 0)
+            tweenedY.set(matterBall?.position.y || 0)
+            tweenedAngle.set(matterBall?.angle || 0)
         }
+        ballX = matterBall?.position.x || 0
+        ballY = matterBall?.position.y || 0
+        ballRotation = matterBall?.angle || 0
     }
 
     const fallInHoleAnimation = (x: number, y: number) => {
@@ -127,6 +107,21 @@
         setTimeout(() => win.set(undefined), 750)
     }
 
+    $: ballX = matterBall?.position.x || 0
+    $: ballY = matterBall?.position.y || 0
+    $: ballRotation = matterBall?.angle || 0
+
 
 </script>
+
+<Sprite 
+    key="ball"
+    x={ballX}
+    y={ballY}
+    anchor={0.5}
+    zIndex={999}
+    width={BALL_SIZE_PIXI}
+    height={BALL_SIZE_PIXI}
+    rotation={ballRotation}
+/>
 
