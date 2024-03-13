@@ -37,11 +37,11 @@ export const MOVE_AMOUNT = 5
 
 export const BAR_STARTING_Y = GAME_HEIGHT - 100
 export const BAR_MAX_SKEW = 200
-export const BAR_WIDTH = GAME_WIDTH * 0.98
-export const BAR_WIDTH_PIXI = BAR_WIDTH
+export const BAR_WIDTH = GAME_WIDTH
+export const BAR_WIDTH_PIXI = BAR_WIDTH - 10
 export const BAR_HEIGHT = 8
 export const BAR_HEIGHT_PIXI = 20
-export const BLOCK_OFFSET = 13
+export const BLOCK_OFFSET = 19
 export const BAR_COLOR = '#BFBCB3'
 export const BAR_STROKE_COLOR = '#464542'
 export const BAR_LINE_WIDTH = 3

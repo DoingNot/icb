@@ -13,6 +13,9 @@
     import { reset, win } from '$lib/utils/stores';
 
     let matterBall: Matter.Body
+    let ballX: number;
+    let ballY: number;
+    let ballRotation: number;
     let tweenXDuration = 0
     let tweenYDuration = 0
     let tweenAngleDuration = 0
@@ -41,6 +44,13 @@
         easing: quintIn
     })
 
+    // manually tick matter body properties as it is not reactive
+    const matterTicker = () => {
+        matterBall.position.x = matterBall.position.x
+        matterBall.position.y = matterBall.position.y
+        matterBall.angle = matterBall.angle
+    }
+
     onMount(() => {
         matterBall = Matter.Bodies.circle(
             BALL_STARTING_X,
@@ -60,6 +70,8 @@
         );
         Matter.Body.setMass(matterBall, 0.0001)
         Matter.Composite.add($world, matterBall)
+
+        setInterval(matterTicker, 1000 / 60);
     });
 
     $: {
@@ -70,9 +82,11 @@
             tweenedY.set(matterBall?.position.y || 0)
             tweenedAngle.set(matterBall?.angle || 0)
         }
-        ballX = matterBall?.position.x || 0
-        ballY = matterBall?.position.y || 0
-        ballRotation = matterBall?.angle || 0
+        if(matterBall) {
+            ballX = matterBall.position.x
+            ballY = matterBall.position.y
+            ballRotation = matterBall.angle
+        }
     }
 
     const fallInHoleAnimation = (x: number, y: number) => {
@@ -107,17 +121,13 @@
         setTimeout(() => win.set(undefined), 750)
     }
 
-    $: ballX = matterBall?.position.x || 0
-    $: ballY = matterBall?.position.y || 0
-    $: ballRotation = matterBall?.angle || 0
-
 
 </script>
 
 <Sprite 
     key="ball"
-    x={ballX}
-    y={ballY}
+    x={ballX+ 10}
+    y={ballY + 38}
     anchor={0.5}
     zIndex={999}
     width={BALL_SIZE_PIXI}
