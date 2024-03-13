@@ -1,7 +1,7 @@
 import Matter from 'matter-js'
 import { writable } from 'svelte/store';
-import { DEVICE_RATIO } from './utils';
-import { GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
+// import { DEVICE_RATIO } from './utils';
+// import { GAME_HEIGHT, GAME_WIDTH, BACKGROUND_COLOR } from '$lib/utils/constants';
 
 export const engine: any = writable();
 export const world: any = writable();
@@ -28,7 +28,7 @@ export function Engine() {
     //         wireframes: false
     //     }
     // });
-    //
+
     // Matter.Render.run(render)
  
     Matter.Runner.run(matterRunner, matterEngine)

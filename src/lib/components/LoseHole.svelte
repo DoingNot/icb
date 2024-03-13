@@ -1,7 +1,6 @@
 <script lang="ts">
+    import { Sprite } from 'pixi-svelte';
     import Matter from 'matter-js'
-    import * as PIXI from 'pixi.js';
-    import { loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
 
     export let x: number
@@ -37,10 +36,13 @@
     )
     Matter.Composite.add($world, [loseHole, loseHoleCenter])
 
-    const r = $loadedAssets.loseHole
-    const loseHoleSprite = PIXI.Sprite.from(r)
-    loseHoleSprite.anchor.set(0.5)
-    loseHoleSprite.position.set(x, y)
-    loseHoleSprite.scale = { x: size/160, y: size/160 }
-
 </script>
+
+<Sprite
+    key="losehole"
+    {x}
+    {y}
+    width={size*2}
+    height={size*2}
+    anchor={{ x: 0.3, y: -0.3 }}
+/>

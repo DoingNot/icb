@@ -1,4 +1,3 @@
-import * as PIXI from 'pixi.js';
 import { writable, derived } from "svelte/store";
 import { type GameLevel, type HoleInfo } from "./types";
 import { DEFAULT_KEY_LEFT_DOWN, DEFAULT_KEY_LEFT_UP, DEFAULT_KEY_RIGHT_DOWN, DEFAULT_KEY_RIGHT_UP } from './constants';

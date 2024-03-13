@@ -1,15 +1,13 @@
 <script lang="ts">
     import { Sprite } from 'pixi-svelte';
     import Matter from 'matter-js'
-    import * as PIXI from 'pixi.js';
-    import { DropShadowFilter } from '@pixi/filter-drop-shadow'
 
     import { onMount } from 'svelte';
     import { tweened } from 'svelte/motion';
     import { sineOut, quintIn } from 'svelte/easing';
 
     import { world } from "$lib/utils/Engine";
-    import { BALL_COLOR, BALL_STROKE_COLOR, BALL_LINE_WIDTH, BALL_DROPSHADOW_OPTIONS, BALL_STARTING_X, BALL_STARTING_Y, BALL_SIZE, BALL_SIZE_PIXI } from '$lib/utils/constants';
+    import { BALL_COLOR, BALL_STROKE_COLOR, BALL_LINE_WIDTH, BALL_STARTING_X, BALL_STARTING_Y, BALL_SIZE, BALL_SIZE_PIXI } from '$lib/utils/constants';
     import { reset, win } from '$lib/utils/stores';
 
     let matterBall: Matter.Body

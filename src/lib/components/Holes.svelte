@@ -10,14 +10,14 @@
 
 <Container>
     {#if $config}
-        <!-- {#each $config["loseHoles"] as loseHole} -->
-        <!--     <LoseHole -->
-        <!--         x={loseHole.x} -->
-        <!--         y={loseHole.y} -->
-        <!--         label={`loseHole_${loseHole.index + 1}`} -->
-        <!--         size={loseHole.size} -->
-        <!--     /> -->
-        <!-- {/each} -->
+        {#each $config["loseHoles"] as loseHole}
+            <LoseHole
+                x={loseHole.x}
+                y={loseHole.y}
+                label={`loseHole_${loseHole.index + 1}`}
+                size={loseHole.size}
+            />
+        {/each}
 
         {#each $config["winHoles"] as winHole}
             <WinHole

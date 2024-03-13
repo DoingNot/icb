@@ -1,15 +1,12 @@
 <script lang="ts">
     import { Sprite } from 'pixi-svelte';
     import Matter from 'matter-js';
-    import * as PIXI from 'pixi.js';
-    import { DropShadowFilter } from '@pixi/filter-drop-shadow';
 
     import { tweened } from "svelte/motion";
     import { onMount } from "svelte";
 
-    import { pixiApplication, loadedAssets } from '$lib/utils/App';
     import { world } from '$lib/utils/Engine';
-    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_DROPSHADOW_OPTIONS, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI, MOVE_AMOUNT, BAR_HEIGHT_PIXI } from '$lib/utils/constants';
+    import { TWEEN_DURATION, BAR_WIDTH, BAR_HEIGHT, BLOCK_OFFSET, BAR_COLOR, GAME_WIDTH, GAME_HEIGHT, BAR_STROKE_COLOR, BAR_LINE_WIDTH, BAR_STARTING_Y, BAR_MAX_SKEW, BAR_WIDTH_PIXI, MOVE_AMOUNT, BAR_HEIGHT_PIXI } from '$lib/utils/constants';
     import { reset, lives, win, leftUpKey, leftDownKey, rightUpKey, rightDownKey, difficulty } from '$lib/utils/stores';
     import { getIsMobile } from '$lib/utils/utils';
 
@@ -34,10 +31,10 @@
     const barRightX = GAME_WIDTH - 2 * BLOCK_OFFSET;
     $: barRightY = $rightY - ($rightY - $leftY) / 95 - 23;
 
-    let increaseLeftTimeoutId: number | undefined = undefined;
-    let decreaseLeftTimeoutId: number | undefined = undefined;
-    let increaseRightTimeoutId: number | undefined = undefined;
-    let decreaseRightTimeoutId: number | undefined = undefined;
+    let increaseLeftTimeoutId: number | undefined | ReturnType<typeof setTimeout> = undefined;
+    let decreaseLeftTimeoutId: number | undefined | ReturnType<typeof setTimeout> = undefined;
+    let increaseRightTimeoutId: number | undefined | ReturnType<typeof setTimeout> = undefined;
+    let decreaseRightTimeoutId: number | undefined | ReturnType<typeof setTimeout> = undefined;
 
     let barRotation = 0;
 
@@ -59,16 +56,12 @@
             })
         }
 
-        // barLeftSprite?.position.set(barLeftX, barLeftY - 6)
-
         if(barRight) {
             Matter.Body.setPosition(barRight, {
                 x: barRightX,
                 y: barRightY
             })
         }
-
-        // barRightSprite?.position.set(barRightX, barRightY - 6)
     }
 
     const increaseLeftY = async () => {
@@ -189,8 +182,6 @@
         }
     }
     
-    
-
     let barBody: Matter.Body;
     let barLeft: Matter.Body;
     let barRight: Matter.Body;
@@ -245,31 +236,9 @@
 
         Matter.World.add($world, [barLeft, barRight, barBody]);
 
-        // barBodySprite.scale = { x: BAR_WIDTH_PIXI / 4, y: 0.6 / 4 };
-        //
-        // barLeftSprite = PIXI.Sprite.from(r.barBlock);
-        // barLeftSprite.anchor.set(0.5);
-        // barLeftSprite.scale = { x : 0.25, y: 0.25 }
-        //
-        // barRightSprite = PIXI.Sprite.from(r.barBlock);
-        // barRightSprite.anchor.set(0.5)
-        // barRightSprite.scale = { x : 0.25, y: 0.25 }
-        //
-        // const barContainer = new PIXI.Container();
-        // barContainer.addChild(barBodySprite);
-        // barContainer.addChild(barLeftSprite);
-        // barContainer.addChild(barRightSprite);
-        // barContainer.filters = [new DropShadowFilter(BAR_DROPSHADOW_OPTIONS)];
-        // barContainer.zIndex = 999
-        //
-        // update()
-        // $pixiApplication.stage.addChild(barContainer);
-
         window.addEventListener('keydown', keyDownHandler);
         window.addEventListener('keyup', keyUpHandler);
-        // window.addEventListener('touchstart', (event) => { event.preventDefault(); }, { passive: false });
         window.addEventListener('touchmove', (event) => { event.preventDefault(); }, { passive: false });
-        // window.addEventListener('touchend', (event) => { event.preventDefault(); }, { passive: false });
         window.addEventListener('dragstart', (event) => { event.preventDefault(); }, { passive: false });
         window.addEventListener('drag', (event) => { event.preventDefault(); }, { passive: false });
 
@@ -316,9 +285,9 @@
 />
 
 {#if isMobile}
-    <div class="absolute flex flex-row p-4 w-screen bottom-8 justify-between">
+    <div class="absolute !flex flex-row p-4 w-screen bottom-8 justify-between">
         <div class="flex flex-col h-full gap-2">
-            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-50 left-0 bottom-28 rounded-md" 
                 on:touchstart={() => touchDownHandler('leftUp')}
                 on:dragenter={() => touchDownHandler('leftUp')}
                 on:touchend={() => touchUpHandler('leftUp')}
@@ -330,7 +299,7 @@
                 border-r-[15px] border-r-transparent">
                 </div>
             </div>
-            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-50 left-0 bottom-28 rounded-md" 
                 on:touchstart={() => touchDownHandler('leftDown')}
                 on:dragenter={() => touchDownHandler('leftDown')}
                 on:touchend={() => touchUpHandler('leftDown')}
@@ -344,7 +313,7 @@
             </div>
         </div>
         <div class="flex flex-col h-full gap-2">
-            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-50 left-0 bottom-28 rounded-md" 
                 on:touchstart={() => touchDownHandler('rightUp')}
                 on:dragenter={() => touchDownHandler('rightUp')}
                 on:touchend={() => touchUpHandler('rightUp')}
@@ -356,7 +325,7 @@
                 border-r-[15px] border-r-transparent">
                 </div>
             </div>
-            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-40 left-0 bottom-28 rounded-md" 
+            <div class="flex justify-center content-center items-center w-24 h-16 bg-black/30 border border-black/30 z-50 left-0 bottom-28 rounded-md" 
                 on:touchstart={() => touchDownHandler('rightDown')}
                 on:dragenter={() => touchDownHandler('rightDown')}
                 on:touchend={() => touchUpHandler('rightDown')}
