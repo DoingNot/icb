@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { Assets } from 'pixi.js';
-    import { ASSETS_DATA } from '$lib/utils/constants';
-    import { createApp, setAppContext, getAppContext, App, Text, spriteLoad } from 'pixi-svelte';
-    import { onMount } from 'svelte';
+    import { createApp, setAppContext, App } from 'pixi-svelte';
     import assets from '$lib/assets'
+    import { BAR_WIDTH } from '$lib/utils/constants';
+    import { onMount } from 'svelte';
 
     const app = createApp();
     const { loaded } = app;
@@ -11,28 +10,19 @@
     setAppContext({ ...app, assets })
     const { pixiApplication } = app;
 
-    async function loadAssets() {
-        const assets = {}
-        for (const asset of ASSETS_DATA) {
-            const texture = await Assets.load(asset.src)
-            assets[asset.alias] = texture
-        }
-
-        return assets
-    }
-
-    // loadAssets().then(r => assets = r)
-    //
-    // $: if(assets) {
-    //     context.loadedAssets.set(assets)
-    // }
-    // $: console.log($pixiApplication)
-    // $: console.log($loadedAssets)
-    // $: console.log(context.loadedAssets)
-    // for PIXIJS Dev tools
     $: if($pixiApplication) {
+        //for pixijs devtools
         globalThis.__PIXI_APP__ = $pixiApplication;
+        $pixiApplication.stage.position.set(window.innerWidth / 2 - BAR_WIDTH / 2, 0)
     }
+
+    const resize = () => {
+        $pixiApplication?.stage.position.set(window.innerWidth / 2 - BAR_WIDTH / 2, 0)
+    }
+
+    onMount(() => {
+        window.addEventListener("resize", resize)
+    })
 
 </script>
 

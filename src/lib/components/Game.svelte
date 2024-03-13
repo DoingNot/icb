@@ -8,6 +8,7 @@
 
 </script>
 
+<UI />
 <PixiApplication>
     <Engine>
         <Ball />
@@ -15,4 +16,3 @@
     </Engine>
 </PixiApplication>
 
-<UI />

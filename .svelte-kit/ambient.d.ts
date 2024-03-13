@@ -40,6 +40,7 @@ declare module '$env/static/private' {
 	export const LUA_PATH: string;
 	export const WT_PROFILE_ID: string;
 	export const npm_package_dependencies_pixi_svelte: string;
+	export const MOTD_SHOWN: string;
 	export const HOME: string;
 	export const OLDPWD: string;
 	export const npm_package_devDependencies__typescript_eslint_parser: string;
@@ -159,6 +160,7 @@ declare module '$env/dynamic/private' {
 		LUA_PATH: string;
 		WT_PROFILE_ID: string;
 		npm_package_dependencies_pixi_svelte: string;
+		MOTD_SHOWN: string;
 		HOME: string;
 		OLDPWD: string;
 		npm_package_devDependencies__typescript_eslint_parser: string;

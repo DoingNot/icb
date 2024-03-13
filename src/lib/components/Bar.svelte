@@ -28,10 +28,10 @@
     $: barY = (($leftY + $rightY) / 2);
     const barX = GAME_WIDTH / 2;
 
-    const barLeftX = 0;
+    const barLeftX = BLOCK_OFFSET;
     $: barLeftY = $leftY - ($rightY - $leftY) / 95 - 23
 
-    const barRightX = GAME_WIDTH - 2.5 * BLOCK_OFFSET;
+    const barRightX = GAME_WIDTH - 2 * BLOCK_OFFSET;
     $: barRightY = $rightY - ($rightY - $leftY) / 95 - 23;
 
     let increaseLeftTimeoutId: number | undefined = undefined;
@@ -293,7 +293,7 @@
 
 <Sprite 
     key="bar"
-    x={barX - 14}
+    x={barX}
     y={barY + 38}
     anchor={0.5}
     width={BAR_WIDTH_PIXI}
