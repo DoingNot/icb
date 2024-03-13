@@ -98,7 +98,7 @@
         tweenAngleDuration = 400
         tweenedAngle.set(matterBall.angle + 500)
 
-        tweenedScale.set(BALL_SIZE_PIXI / 2)
+        tweenedScale.set(BALL_SIZE_PIXI / 1.5)
         tweenedAlpha.set(0)
 
         Matter.Body.setStatic(matterBall, true)
@@ -130,8 +130,9 @@
     y={ballY + 38}
     anchor={0.5}
     zIndex={999}
-    width={BALL_SIZE_PIXI}
-    height={BALL_SIZE_PIXI}
+    width={$tweenedScale}
+    height={$tweenedScale}
     rotation={ballRotation}
+    alpha={$tweenedAlpha}
 />
 

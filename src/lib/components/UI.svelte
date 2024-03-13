@@ -2,13 +2,13 @@
     import { blur } from 'svelte/transition';
     import heart from '../assets/heart.png'
     import greyheart from '../assets/greyheart.png'
-    import { lives, lostLives, level, difficulty, holesContainer, gameWon, leftUpKey, leftDownKey, rightUpKey, rightDownKey } from "$lib/utils/stores";
+    import { lives, lostLives, level, difficulty, gameWon, leftUpKey, leftDownKey, rightUpKey, rightDownKey } from "$lib/utils/stores";
     import { BACKGROUND_COLOR, DEFAULT_KEY_LEFT_DOWN, DEFAULT_KEY_LEFT_UP, DEFAULT_KEY_RIGHT_DOWN, DEFAULT_KEY_RIGHT_UP, EASY_HOLES_COUNT, EXTREME_HOLES_COUNT, GAME_HEIGHT, GAME_WIDTH, HARD_HOLES_COUNT, NORMAL_HOLES_COUNT, WIN_HOLES_COUNT } from '$lib/utils/constants';
     import { world } from '$lib/utils/Engine';
     import Matter from 'matter-js';
 
-    const frameStyle = `width: ${GAME_WIDTH}px`
-    const frameClass = `absolute h-[95vh] z-0 bg-[${BACKGROUND_COLOR}] rounded-xl`
+    const frameStyle = `width: ${GAME_WIDTH}px; background-color: ${BACKGROUND_COLOR}`
+    const frameClass = `absolute h-[95vh] rounded-xl`
 
     let leftUpInput: string;
     let leftDownInput: string;
@@ -57,7 +57,7 @@
         level.set(1)
         lives.set(3)
         difficulty.set(0)
-        $holesContainer.removeChildren();
+        // $holesContainer.removeChildren();
         Matter.Composite.remove($world, $world.bodies.filter((body: Matter.Body) => body.label.split('_').some((v: string) => ['loseHole', 'winHole'].includes(v))))
     }
     

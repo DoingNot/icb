@@ -11,6 +11,7 @@
 <UI />
 <PixiApplication>
     <Engine>
+        <Holes />
         <Ball />
         <Bar />
     </Engine>

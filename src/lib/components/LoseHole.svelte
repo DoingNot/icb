@@ -2,7 +2,6 @@
     import Matter from 'matter-js'
     import * as PIXI from 'pixi.js';
     import { loadedAssets } from '$lib/utils/App';
-    import { holesContainer } from '$lib/utils/stores';
     import { world } from '$lib/utils/Engine';
 
     export let x: number
@@ -43,7 +42,5 @@
     loseHoleSprite.anchor.set(0.5)
     loseHoleSprite.position.set(x, y)
     loseHoleSprite.scale = { x: size/160, y: size/160 }
-
-    $holesContainer.addChild(loseHoleSprite)
 
 </script>

@@ -1,9 +1,8 @@
 <script lang="ts">
+    import { Text, Sprite, Container } from 'pixi-svelte';
     import Matter from 'matter-js'
-    import * as PIXI from 'pixi.js';
-    import { loadedAssets } from '$lib/utils/App';
     import { world } from "$lib/utils/Engine";
-    import { level, holesContainer } from '$lib/utils/stores';
+    import { level } from '$lib/utils/stores';
 
     export let winLevel: number
     export let x: number
@@ -39,27 +38,27 @@
     )
     Matter.Composite.add($world, [winHole, winHoleCenter])
 
-    const r = $loadedAssets.winHole
-    const winHoleSprite = PIXI.Sprite.from(r)
-    winHoleSprite.anchor.set(0.5)
-    winHoleSprite.scale = { x: 0.25, y: 0.25 }
+    $: winHoleSprite = $level != winLevel ? "winholeinactive" : "winhole"
 
-    $: winHoleSprite.texture = $level != winLevel ? $loadedAssets.winHoleInactive : r
-
-    $: style = new PIXI.TextStyle({
-        fill: $level != winLevel ? "#1c1c1c" : "#53DB11",
-        fontWeight: "800"
-    });
-    const text = new PIXI.Text(winLevel, style);
-    text.position.set(-8, -72)
-
-    const winHoleContainer = new PIXI.Container();
-
-    winHoleContainer.position.set(x, y)
-    winHoleContainer.scale = { x: size/40, y: size/40 }
-
-    winHoleContainer.addChild(winHoleSprite);
-    winHoleContainer.addChild(text);
-
-    $holesContainer.addChild(winHoleContainer);
 </script>
+
+<Container
+    x={x}
+    y={y}
+    scale={size/18}
+    pivot={{ x: size, y: 0}}
+>
+    <Text
+        y={-7}
+        x={20}
+        value={String(winLevel)}
+        style={{
+            fill: $level != winLevel ? "#1c1c1c" : "#53DB11",
+            fontWeight: "800",
+            fontSize: 13
+        }}
+    />
+    <Sprite 
+        key={winHoleSprite}
+    />
+</Container>
